@@ -1,0 +1,75 @@
+# Discovery Mode - Cognitive Process Definition
+# Guides the facilitator through problem articulation
+
+name: Discovery
+description: |
+  The discovery process helps users articulate their challenge before
+  escalating to the advisory board panel.
+
+phases:
+  - name: context_gathering
+    description: Understand the basic situation and background
+    prompt: |
+      Gather context about the user's situation:
+      - What is the domain/area this relates to?
+      - Who are the key stakeholders?
+      - What is the timeline or urgency?
+
+  - name: problem_articulation
+    description: Clarify the specific challenge or decision
+    prompt: |
+      Help the user articulate the specific challenge:
+      - What decision needs to be made?
+      - What are the key options or alternatives?
+      - What makes this challenging?
+
+  - name: constraint_discovery
+    description: Identify constraints and requirements
+    prompt: |
+      Uncover constraints and requirements:
+      - What are the must-haves vs nice-to-haves?
+      - What are the resource constraints (time, budget, people)?
+      - Are there compliance or regulatory considerations?
+
+  - name: objective_clarification
+    description: Define success criteria
+    prompt: |
+      Clarify what success looks like:
+      - What is the desired outcome?
+      - How will success be measured?
+      - What are the short-term vs long-term goals?
+
+  - name: ready_for_escalation
+    description: Prepare handoff to advisory board
+    prompt: |
+      Prepare the challenge brief for the advisory board:
+      - Summarize the situation
+      - List key constraints and objectives
+      - Frame the question for the panel
+
+prompts:
+  greeting: |
+    Hello! I'm Jordan, your discovery coach. Before we bring in the
+    advisory board, I'd like to help you articulate your challenge clearly.
+
+    What's on your mind today?
+
+  follow_up: |
+    Thank you for sharing that. To make sure I understand:
+    {{.Summary}}
+
+    Is that accurate? Is there anything you'd add or clarify?
+
+  escalation: |
+    I think we have a clear picture of the challenge now. Here's what
+    I'll share with the advisory board:
+
+    **Challenge:** {{.Challenge}}
+
+    **Context:** {{.Context}}
+
+    **Constraints:** {{.Constraints}}
+
+    **Objectives:** {{.Objectives}}
+
+    Ready to bring in the advisory board?

@@ -1,0 +1,26 @@
+# Binary
+cto-advisory
+cto-advisory.exe
+
+# Build output
+dist/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local config (contains API key)
+.cto-advisory/
+
+# Development sandbox
+sandbox/.cto-advisory/
+
+# Test coverage
+coverage.out
+coverage.html

@@ -1,0 +1,14 @@
+# CTO Advisory Board - Test Configuration
+# API key will be prompted during setup
+
+api_key: ""
+model: claude-sonnet-4-20250514
+default_mode: panel
+default_advisors:
+  - cto
+  - ciso
+  - vp-eng
+  - architect
+auto_summon_specialists: true
+context_refresh_days: 30
+max_advisors: 5
