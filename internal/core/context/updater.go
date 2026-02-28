@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/carlosinfantes/cto-advisory-board/internal/types"
+	"github.com/carlosinfantes/cio/internal/types"
 )
 
 // DetectUpdateSignals analyzes a question for signals that CRF context may have changed.

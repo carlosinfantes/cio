@@ -7,8 +7,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/carlosinfantes/cto-advisory-board/internal/config"
-	"github.com/carlosinfantes/cto-advisory-board/internal/types"
+	"github.com/carlosinfantes/cio/internal/config"
+	"github.com/carlosinfantes/cio/internal/types"
 )
 
 // Wizard orchestrates the interactive setup process.
@@ -70,7 +70,7 @@ func (w *Wizard) printWelcome() {
 	fmt.Println()
 	fmt.Println("╔═══════════════════════════════════════════════════════════════╗")
 	fmt.Println("║                                                               ║")
-	fmt.Println("║           Welcome to the CTO Advisory Board                   ║")
+	fmt.Println("║           Welcome to the CIO - Chief Intelligence Officer                   ║")
 	fmt.Println("║                                                               ║")
 	fmt.Println("║   AI-powered advisory boards for technical decision-making    ║")
 	fmt.Println("║                                                               ║")
@@ -93,10 +93,10 @@ func (w *Wizard) printSummary() {
 	fmt.Printf("  Mode:         %s\n", w.config.DefaultMode)
 	fmt.Printf("  Discovery:    %v\n", w.config.StartInDiscovery)
 	fmt.Println()
-	fmt.Println("Configuration saved to .cto-advisory/config.yaml")
+	fmt.Println("Configuration saved to .cio/config.yaml")
 	fmt.Println()
 	fmt.Println("Next steps:")
-	fmt.Println("  1. Install a domain plugin:  cto plugin install cto-advisory")
+	fmt.Println("  1. Install a domain plugin:  cto plugin install cio")
 	fmt.Println("  2. Start an advisory session: cto ask \"Your question here\"")
 	fmt.Println()
 }

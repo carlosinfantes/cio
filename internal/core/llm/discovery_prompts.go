@@ -1,11 +1,11 @@
-// Package llm provides prompt building for the CTO Advisory Board.
+// Package llm provides prompt building for the CIO - Chief Intelligence Officer.
 package llm
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/carlosinfantes/cto-advisory-board/internal/types"
+	"github.com/carlosinfantes/cio/internal/types"
 )
 
 // BuildFacilitatorSystemPrompt creates the system prompt for discovery mode.

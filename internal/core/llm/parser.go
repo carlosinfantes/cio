@@ -1,11 +1,11 @@
-// Package llm provides response parsing for the CTO Advisory Board.
+// Package llm provides response parsing for the CIO - Chief Intelligence Officer.
 package llm
 
 import (
 	"regexp"
 	"strings"
 
-	"github.com/carlosinfantes/cto-advisory-board/internal/types"
+	"github.com/carlosinfantes/cio/internal/types"
 )
 
 var (

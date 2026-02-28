@@ -1,4 +1,4 @@
-// API Client for CTO Advisory Board
+// API Client for CIO - Chief Intelligence Officer
 
 import type {
   Session,
@@ -39,7 +39,7 @@ class APIClient {
 
   // === Session Management ===
 
-  async createSession(domain: string = 'cto-advisory'): Promise<{ session_id: string }> {
+  async createSession(domain: string = 'cio'): Promise<{ session_id: string }> {
     return this.request('/api/v1/session', {
       method: 'POST',
       body: JSON.stringify({ domain }),

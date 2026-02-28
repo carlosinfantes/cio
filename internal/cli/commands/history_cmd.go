@@ -1,4 +1,4 @@
-// Package commands implements the history command for the CTO Advisory Board.
+// Package commands implements the history command for the CIO - Chief Intelligence Officer.
 package commands
 
 import (
@@ -8,9 +8,9 @@ import (
 	"github.com/charmbracelet/lipgloss"
 	"github.com/spf13/cobra"
 
-	"github.com/carlosinfantes/cto-advisory-board/internal/cli/output"
-	"github.com/carlosinfantes/cto-advisory-board/internal/core/decisions"
-	"github.com/carlosinfantes/cto-advisory-board/internal/types"
+	"github.com/carlosinfantes/cio/internal/cli/output"
+	"github.com/carlosinfantes/cio/internal/core/decisions"
+	"github.com/carlosinfantes/cio/internal/types"
 )
 
 var (
@@ -36,13 +36,13 @@ Actions:
   tag <id> <tag>           Add a tag to a decision
 
 Examples:
-  cto-advisory history list
-  cto-advisory history list --status approved
-  cto-advisory history list --tag infrastructure
-  cto-advisory history search kubernetes
-  cto-advisory history show dec-2024-01-13-kubernetes
-  cto-advisory history status dec-2024-01-13-kubernetes approved
-  cto-advisory history tag dec-2024-01-13-kubernetes infrastructure`,
+  cio history list
+  cio history list --status approved
+  cio history list --tag infrastructure
+  cio history search kubernetes
+  cio history show dec-2024-01-13-kubernetes
+  cio history status dec-2024-01-13-kubernetes approved
+  cio history tag dec-2024-01-13-kubernetes infrastructure`,
 		Args: cobra.MinimumNArgs(1),
 		RunE: runHistory,
 	}
@@ -61,32 +61,32 @@ func runHistory(cmd *cobra.Command, args []string) error {
 		return handleHistoryList()
 	case "show":
 		if len(args) < 2 {
-			output.PrintError("Usage: cto-advisory history show <id>")
+			output.PrintError("Usage: cio history show <id>")
 			return nil
 		}
 		return handleHistoryShow(args[1])
 	case "search":
 		if len(args) < 2 {
-			output.PrintError("Usage: cto-advisory history search <query>")
+			output.PrintError("Usage: cio history search <query>")
 			return nil
 		}
 		return handleHistorySearch(strings.Join(args[1:], " "))
 	case "status":
 		if len(args) < 3 {
-			output.PrintError("Usage: cto-advisory history status <id> <status>")
+			output.PrintError("Usage: cio history status <id> <status>")
 			fmt.Println("Status values: draft, review, approved, rejected, superseded, archived")
 			return nil
 		}
 		return handleHistoryStatus(args[1], args[2])
 	case "tag":
 		if len(args) < 3 {
-			output.PrintError("Usage: cto-advisory history tag <id> <tag>")
+			output.PrintError("Usage: cio history tag <id> <tag>")
 			return nil
 		}
 		return handleHistoryTag(args[1], args[2])
 	default:
 		output.PrintError(fmt.Sprintf("Unknown action: %s", action))
-		fmt.Println("Usage: cto-advisory history <list|show|search|status|tag>")
+		fmt.Println("Usage: cio history <list|show|search|status|tag>")
 		return nil
 	}
 }

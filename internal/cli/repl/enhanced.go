@@ -9,10 +9,10 @@ import (
 
 	"github.com/chzyer/readline"
 
-	"github.com/carlosinfantes/cto-advisory-board/internal/cli/output"
-	"github.com/carlosinfantes/cto-advisory-board/internal/core/facilitation"
-	"github.com/carlosinfantes/cto-advisory-board/internal/core/llm"
-	"github.com/carlosinfantes/cto-advisory-board/internal/types"
+	"github.com/carlosinfantes/cio/internal/cli/output"
+	"github.com/carlosinfantes/cio/internal/core/facilitation"
+	"github.com/carlosinfantes/cio/internal/core/llm"
+	"github.com/carlosinfantes/cio/internal/types"
 )
 
 // EnhancedSession extends Session with facilitation coordinator.

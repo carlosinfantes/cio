@@ -1,4 +1,4 @@
-// Types for CTO Advisory Board Frontend
+// Types for CIO - Chief Intelligence Officer Frontend
 
 export interface Session {
   id: string;

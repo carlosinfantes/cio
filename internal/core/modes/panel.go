@@ -4,8 +4,8 @@ package modes
 import (
 	"context"
 
-	"github.com/carlosinfantes/cto-advisory-board/internal/core/llm"
-	"github.com/carlosinfantes/cto-advisory-board/internal/types"
+	"github.com/carlosinfantes/cio/internal/core/llm"
+	"github.com/carlosinfantes/cio/internal/types"
 )
 
 // Panel executes a panel discussion with the advisory board.

@@ -2,8 +2,8 @@
 package advisors
 
 import (
-	"github.com/carlosinfantes/cto-advisory-board/internal/plugins"
-	"github.com/carlosinfantes/cto-advisory-board/internal/types"
+	"github.com/carlosinfantes/cio/internal/plugins"
+	"github.com/carlosinfantes/cio/internal/types"
 )
 
 // All advisor personas
@@ -197,7 +197,7 @@ var (
 // If a plugin is active, returns the plugin's core advisors.
 func CoreAdvisors() []types.Persona {
 	registry := plugins.GetRegistry()
-	if plugin, ok := registry.GetActivePlugin(); ok && plugin.Manifest.Domain != "cto-advisory" {
+	if plugin, ok := registry.GetActivePlugin(); ok && plugin.Manifest.Domain != "cio" {
 		// Return core advisors from active plugin
 		var personas []types.Persona
 		for _, advisor := range plugin.Manifest.CoreAdvisors {
@@ -223,7 +223,7 @@ func CoreAdvisors() []types.Persona {
 // If a plugin is active, returns the plugin's specialists.
 func Specialists() []types.Persona {
 	registry := plugins.GetRegistry()
-	if plugin, ok := registry.GetActivePlugin(); ok && plugin.Manifest.Domain != "cto-advisory" {
+	if plugin, ok := registry.GetActivePlugin(); ok && plugin.Manifest.Domain != "cio" {
 		var personas []types.Persona
 		for _, specialist := range plugin.Manifest.Specialists {
 			personas = append(personas, types.Persona{
@@ -252,9 +252,10 @@ func AllAdvisors() []types.Persona {
 
 // GetByID returns an advisor by their ID.
 func GetByID(id types.AdvisorID) (types.Persona, bool) {
-	// Check facilitator separately (not part of panel advisors)
-	if id == types.AdvisorFacilitator {
-		return Facilitator, true
+	// Check facilitator (supports both default and plugin facilitator IDs)
+	facilitator := GetFacilitator()
+	if id == facilitator.ID || id == types.AdvisorFacilitator {
+		return facilitator, true
 	}
 	for _, advisor := range AllAdvisors() {
 		if advisor.ID == id {
@@ -268,7 +269,7 @@ func GetByID(id types.AdvisorID) (types.Persona, bool) {
 // If a plugin is active, returns the plugin's facilitator.
 func GetFacilitator() types.Persona {
 	registry := plugins.GetRegistry()
-	if plugin, ok := registry.GetActivePlugin(); ok && plugin.Manifest.Domain != "cto-advisory" {
+	if plugin, ok := registry.GetActivePlugin(); ok && plugin.Manifest.Domain != "cio" {
 		f := plugin.Manifest.Facilitator
 		return types.Persona{
 			ID:            types.AdvisorID(f.ID),

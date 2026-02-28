@@ -1,4 +1,4 @@
-// Package commands implements the CLI commands for the CTO Advisory Board.
+// Package commands implements the CLI commands for the CIO - Chief Intelligence Officer.
 package commands
 
 import (
@@ -8,14 +8,14 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/carlosinfantes/cto-advisory-board/internal/cli/output"
-	"github.com/carlosinfantes/cto-advisory-board/internal/config"
-	advisorsPkg "github.com/carlosinfantes/cto-advisory-board/internal/core/advisors"
-	ctxLoader "github.com/carlosinfantes/cto-advisory-board/internal/core/context"
-	"github.com/carlosinfantes/cto-advisory-board/internal/core/decisions"
-	"github.com/carlosinfantes/cto-advisory-board/internal/core/llm"
-	"github.com/carlosinfantes/cto-advisory-board/internal/core/modes"
-	"github.com/carlosinfantes/cto-advisory-board/internal/types"
+	"github.com/carlosinfantes/cio/internal/cli/output"
+	"github.com/carlosinfantes/cio/internal/config"
+	advisorsPkg "github.com/carlosinfantes/cio/internal/core/advisors"
+	ctxLoader "github.com/carlosinfantes/cio/internal/core/context"
+	"github.com/carlosinfantes/cio/internal/core/decisions"
+	"github.com/carlosinfantes/cio/internal/core/llm"
+	"github.com/carlosinfantes/cio/internal/core/modes"
+	"github.com/carlosinfantes/cio/internal/types"
 )
 
 // NewAskCmd creates the ask command.
@@ -29,10 +29,10 @@ The advisory board consists of virtual executives (CTO, CISO, VP Engineering,
 Staff Architect) who will debate your specific situation.
 
 Examples:
-  cto-advisory ask "Should we adopt Kubernetes?"
-  cto-advisory ask --mode socratic "We need to scale"
-  cto-advisory ask --mode advocate "We've decided to use MongoDB"
-  cto-advisory ask --advisors cto,architect "Platform architecture review"`,
+  cio ask "Should we adopt Kubernetes?"
+  cio ask --mode socratic "We need to scale"
+  cio ask --mode advocate "We've decided to use MongoDB"
+  cio ask --advisors cto,architect "Platform architecture review"`,
 		Args: cobra.ExactArgs(1),
 		RunE: runAskCommand,
 	}
@@ -43,6 +43,11 @@ Examples:
 func runAskCommand(cmd *cobra.Command, args []string) error {
 	question := args[0]
 
+	// Load plugins
+	if err := loadPlugin(); err != nil {
+		output.PrintError(fmt.Sprintf("Loading plugins: %v", err))
+	}
+
 	// Load configuration
 	cfg, err := config.Load()
 	if err != nil {
@@ -51,7 +56,7 @@ func runAskCommand(cmd *cobra.Command, args []string) error {
 	}
 
 	if cfg.APIKey == "" {
-		output.PrintError("No API key configured. Run: cto-advisory init")
+		output.PrintError("No API key configured. Run: cio init")
 		return fmt.Errorf("no API key")
 	}
 
@@ -162,8 +167,8 @@ func runAskCommand(cmd *cobra.Command, args []string) error {
 		} else {
 			fmt.Println()
 			output.PrintInfo(fmt.Sprintf("Decision saved: %s", doc.Decision.ID))
-			fmt.Println("  Use 'cto-advisory history show " + doc.Decision.ID + "' to view details")
-			fmt.Println("  Use 'cto-advisory history status " + doc.Decision.ID + " approved' to update status")
+			fmt.Println("  Use 'cio history show " + doc.Decision.ID + "' to view details")
+			fmt.Println("  Use 'cio history status " + doc.Decision.ID + " approved' to update status")
 		}
 	}
 

@@ -22,6 +22,7 @@ type PluginEntry struct {
 	Version     string `json:"version" yaml:"version"`
 
 	// Metadata
+	Emoji       string   `json:"emoji,omitempty" yaml:"emoji,omitempty"`
 	Description string   `json:"description" yaml:"description"`
 	Author      string   `json:"author" yaml:"author"`
 	License     string   `json:"license,omitempty" yaml:"license,omitempty"`
@@ -43,6 +44,7 @@ type PluginEntry struct {
 
 	// Stats
 	Downloads int `json:"downloads,omitempty" yaml:"downloads,omitempty"`
+	Stars     int `json:"stars,omitempty" yaml:"stars,omitempty"`
 
 	// Timestamps
 	CreatedAt time.Time `json:"created_at,omitempty" yaml:"created_at,omitempty"`
@@ -90,54 +92,33 @@ func (p *PluginEntry) Matches(query string) bool {
 	return false
 }
 
-// GetDefaultIndex returns a default index with placeholder plugins.
-// Used when the registry is not available.
+// GetDefaultIndex returns a default index with all official plugins.
+// Used as fallback when the registry is not reachable.
 func GetDefaultIndex() *RegistryIndex {
 	return &RegistryIndex{
 		RegistryVersion: "1.0.0",
 		LastUpdated:     time.Now(),
 		Plugins: []PluginEntry{
-			{
-				Domain:        "cto-advisory",
-				DisplayName:   "CTO Advisory Board",
-				Version:       "1.0.0",
-				Description:   "AI-powered executive committee for CTOs making technical decisions",
-				Author:        "CTO Advisory Board Team",
-				License:       "MIT",
-				Keywords:      []string{"technology", "architecture", "engineering", "startup"},
-				Category:      "technology",
-				Featured:      true,
-				MinCLIVersion: "1.0.0",
-			},
-			{
-				Domain:        "legal-advisory",
-				DisplayName:   "Legal Advisory Board",
-				Version:       "1.0.0",
-				Description:   "AI-powered legal counsel for business decisions",
-				Author:        "CTO Advisory Board Team",
-				License:       "MIT",
-				Keywords:      []string{"legal", "compliance", "contracts", "corporate"},
-				Category:      "legal",
-				Featured:      true,
-				MinCLIVersion: "1.0.0",
-			},
-			{
-				Domain:        "medical-advisory",
-				DisplayName:   "Medical Practice Advisory",
-				Version:       "1.0.0",
-				Description:   "AI-powered advisory for healthcare practice decisions",
-				Author:        "CTO Advisory Board Team",
-				License:       "MIT",
-				Keywords:      []string{"healthcare", "medical", "clinic", "practice"},
-				Category:      "healthcare",
-				MinCLIVersion: "1.0.0",
-			},
+			{Domain: "career-advisory", Emoji: "\U0001F9ED", DisplayName: "Career & Growth Advisory Board", Version: "1.0.0", Description: "AI-powered career advisory for professionals", Author: "CIO Team", Category: "personal", Stars: 128, Downloads: 3204},
+			{Domain: "cio", Emoji: "\U0001F4AD", DisplayName: "CIO - Chief Intelligence Officer", Version: "1.0.0", Description: "AI-powered executive committee for intelligent decision-making", Author: "CIO Team", Category: "technology", Stars: 247, Downloads: 3782},
+			{Domain: "creative-advisory", Emoji: "\u2728", DisplayName: "Creative & Projects Advisory Board", Version: "1.0.0", Description: "AI-powered advisory for creators, writers, and indie builders", Author: "CIO Team", Category: "personal", Stars: 312, Downloads: 7298},
+			{Domain: "data-ai-advisory", Emoji: "\U0001F9E0", DisplayName: "Data & AI Advisory Board", Version: "1.0.0", Description: "AI-powered advisory for data strategy and AI governance", Author: "CIO Team", Category: "technology", Stars: 389, Downloads: 7448},
+			{Domain: "financial-advisory", Emoji: "\U0001F4CA", DisplayName: "Financial Advisory Board", Version: "1.0.0", Description: "AI-powered CFO-level counsel for financial strategy", Author: "CIO Team", Category: "business", Featured: true, Stars: 456, Downloads: 9146},
+			{Domain: "legal-advisory", Emoji: "\u2696\uFE0F", DisplayName: "Legal Advisory Board", Version: "1.0.0", Description: "AI-powered legal counsel for business decisions", Author: "CIO Team", Category: "legal", Stars: 67, Downloads: 953},
+			{Domain: "marketing-advisory", Emoji: "\U0001F4E3", DisplayName: "Marketing & Brand Advisory Board", Version: "1.0.0", Description: "AI-powered CMO-level counsel for marketing strategy", Author: "CIO Team", Category: "business", Featured: true, Stars: 534, Downloads: 13959},
+			{Domain: "people-advisory", Emoji: "\U0001F917", DisplayName: "People & Culture Advisory Board", Version: "1.0.0", Description: "AI-powered CHRO-level counsel for people strategy", Author: "CIO Team", Category: "business", Stars: 142, Downloads: 3492},
+			{Domain: "personal-finance", Emoji: "\U0001F9ED", DisplayName: "Personal Finance Advisory Board", Version: "1.0.0", Description: "AI-powered personal finance advisory for individuals", Author: "CIO Team", Category: "personal", Stars: 89, Downloads: 1175},
+			{Domain: "product-advisory", Emoji: "\U0001F4A1", DisplayName: "Product & Growth Advisory Board", Version: "1.0.0", Description: "AI-powered CPO-level counsel for product strategy", Author: "CIO Team", Category: "business", Stars: 198, Downloads: 2982},
+			{Domain: "security-advisory", Emoji: "\U0001F50D", DisplayName: "Security Advisory Board", Version: "1.0.0", Description: "AI-powered CISO-level counsel for cybersecurity strategy", Author: "CIO Team", Category: "technology", Stars: 276, Downloads: 4706},
+			{Domain: "startup-advisory", Emoji: "\U0001F680", DisplayName: "Startup Advisory Board", Version: "1.0.0", Description: "AI-powered advisory for founders and early-stage companies", Author: "CIO Team", Category: "business", Featured: true, Stars: 421, Downloads: 8158},
+			{Domain: "wellness-advisory", Emoji: "\U0001F331", DisplayName: "Health & Wellness Advisory Board", Version: "1.0.0", Description: "AI-powered wellness advisory for health and lifestyle", Author: "CIO Team", Category: "personal", Stars: 73, Downloads: 1110},
 		},
 		Categories: []Category{
-			{ID: "technology", Name: "Technology & Engineering", Description: "Technical decision-making"},
-			{ID: "legal", Name: "Legal & Compliance", Description: "Legal counsel and compliance"},
+			{ID: "technology", Name: "Technology & Engineering", Description: "Technical decision-making and engineering advisory"},
+			{ID: "legal", Name: "Legal & Compliance", Description: "Legal counsel, contracts, and compliance advisory"},
 			{ID: "healthcare", Name: "Healthcare", Description: "Medical and healthcare advisory"},
-			{ID: "business", Name: "Business & Operations", Description: "General business operations"},
+			{ID: "business", Name: "Business & Operations", Description: "General business operations and specialty domains"},
+			{ID: "personal", Name: "Personal & Life", Description: "Personal advisory for life decisions, wellness, finances, and growth"},
 		},
 	}
 }

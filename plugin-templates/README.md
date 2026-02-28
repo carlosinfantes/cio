@@ -42,7 +42,7 @@ To create a new template set:
 When a user runs `cto plugin create`, the template is expanded to create:
 
 ```
-.cto-advisory/plugins/custom/<domain>/
+.cio/plugins/custom/<domain>/
 ├── manifest.yaml          # From manifest.yaml.tmpl
 ├── settings.yaml          # From settings.yaml.tmpl
 ├── personas/

@@ -10,7 +10,7 @@ import (
 )
 
 // DefaultRegistryURL is the default plugin registry URL.
-const DefaultRegistryURL = "https://raw.githubusercontent.com/cto-advisory-board/plugin-registry/main"
+const DefaultRegistryURL = "https://raw.githubusercontent.com/carlosinfantes/cio-plugin-registry/main"
 
 // Client is the registry HTTP client.
 type Client struct {

@@ -4,9 +4,10 @@ package output
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/charmbracelet/lipgloss"
-	"github.com/carlosinfantes/cto-advisory-board/internal/types"
+	"github.com/carlosinfantes/cio/internal/types"
 )
 
 // ModeOption represents a selectable mode in the unified entry.
@@ -89,7 +90,7 @@ func PrintModeSelector(ctx *types.CRFContext, lastDecision *types.DRFDocument) {
 
 	// Build content
 	var content strings.Builder
-	content.WriteString(headerStyle.Render("💭 CTO Advisory Board"))
+	content.WriteString(headerStyle.Render("💭 CIO - Chief Intelligence Officer"))
 	content.WriteString("\n\n")
 
 	// Context status
@@ -243,7 +244,5 @@ func daysSince(t interface{}) int {
 }
 
 func currentUnix() int64 {
-	// This would normally use time.Now().Unix()
-	// Using a simple placeholder for compilation
-	return 0
+	return time.Now().Unix()
 }

@@ -1,4 +1,4 @@
-// Package commands implements the context command for the CTO Advisory Board.
+// Package commands implements the context command for the CIO - Chief Intelligence Officer.
 package commands
 
 import (
@@ -10,10 +10,10 @@ import (
 	"github.com/charmbracelet/lipgloss"
 	"github.com/spf13/cobra"
 
-	"github.com/carlosinfantes/cto-advisory-board/internal/cli/output"
-	"github.com/carlosinfantes/cto-advisory-board/internal/config"
-	ctxLoader "github.com/carlosinfantes/cto-advisory-board/internal/core/context"
-	"github.com/carlosinfantes/cto-advisory-board/internal/types"
+	"github.com/carlosinfantes/cio/internal/cli/output"
+	"github.com/carlosinfantes/cio/internal/config"
+	ctxLoader "github.com/carlosinfantes/cio/internal/core/context"
+	"github.com/carlosinfantes/cio/internal/types"
 )
 
 func init() {
@@ -32,11 +32,11 @@ Actions:
   check         Check for staleness and conflicts
 
 Examples:
-  cto-advisory context show                 Show all context entities
-  cto-advisory context show organization    Show organization entity only
-  cto-advisory context show team            Show team entities
-  cto-advisory context edit organization    Edit organization.yaml in your editor
-  cto-advisory context check                Check for outdated or conflicting context`,
+  cio context show                 Show all context entities
+  cio context show organization    Show organization entity only
+  cio context show team            Show team entities
+  cio context edit organization    Edit organization.yaml in your editor
+  cio context check                Check for outdated or conflicting context`,
 		Args: cobra.MaximumNArgs(2),
 		RunE: runContext,
 	}
@@ -64,14 +64,14 @@ func runContext(cmd *cobra.Command, args []string) error {
 		return handleContextCheck()
 	default:
 		output.PrintError(fmt.Sprintf("Unknown action: %s", action))
-		fmt.Println("Usage: cto-advisory context <show|edit|check> [type]")
+		fmt.Println("Usage: cio context <show|edit|check> [type]")
 		return nil
 	}
 }
 
 func handleContextShow(entityType string) error {
 	if !config.IsInitialized() {
-		output.PrintError("Project not initialized. Run: cto-advisory init")
+		output.PrintError("Project not initialized. Run: cio init")
 		return nil
 	}
 
@@ -81,7 +81,7 @@ func handleContextShow(entityType string) error {
 		return err
 	}
 	if ctx == nil {
-		output.PrintInfo("No context found. Run 'cto-advisory init' to create context.")
+		output.PrintInfo("No context found. Run 'cio init' to create context.")
 		return nil
 	}
 
@@ -322,7 +322,7 @@ func handleContextEdit(entityType string) error {
 	// Check if file exists
 	if _, err := os.Stat(filePath); os.IsNotExist(err) {
 		output.PrintError(fmt.Sprintf("Context file not found: %s", filePath))
-		fmt.Println("Run 'cto-advisory init' to create context files")
+		fmt.Println("Run 'cio init' to create context files")
 		return nil
 	}
 
@@ -347,7 +347,7 @@ func handleContextEdit(entityType string) error {
 
 func handleContextCheck() error {
 	if !config.IsInitialized() {
-		output.PrintError("Project not initialized. Run: cto-advisory init")
+		output.PrintError("Project not initialized. Run: cio init")
 		return nil
 	}
 

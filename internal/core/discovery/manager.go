@@ -12,8 +12,8 @@ import (
 
 	"gopkg.in/yaml.v3"
 
-	"github.com/carlosinfantes/cto-advisory-board/internal/config"
-	"github.com/carlosinfantes/cto-advisory-board/internal/types"
+	"github.com/carlosinfantes/cio/internal/config"
+	"github.com/carlosinfantes/cio/internal/types"
 )
 
 // SaveSession writes a discovery session to disk.

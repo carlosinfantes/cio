@@ -2,27 +2,31 @@
 
 ## Configuration File
 
-All configuration is stored in `.cto-advisory/config.yaml`:
+All configuration is stored in `.cio/config.yaml`:
 
 ```yaml
 # API Configuration
-api_key: "sk-or-v1-..."           # OpenRouter API key
+api_key: "sk-or-v1-..."              # OpenRouter API key
 model: "anthropic/claude-3.5-sonnet"  # LLM model to use
 
 # Default Behavior
-default_mode: "panel"             # panel, socratic, advocate, framework
-default_advisors:                 # Core advisors for panel discussions
+default_mode: "panel"                # panel, socratic, advocate, framework
+default_advisors:
   - cto
   - ciso
   - vp-eng
   - architect
 
 # Facilitation Settings
-auto_summon_specialists: true     # Auto-include specialists by keywords
-max_advisors: 5                   # Soft cap, warns if exceeded
+auto_summon_specialists: true        # Auto-include specialists by keywords
+max_advisors: 5                      # Soft cap, warns if exceeded
 
 # Context Management
-context_refresh_days: 30          # Prompt for review after N days
+context_refresh_days: 30             # Prompt for review after N days
+
+# Plugin Settings
+active_domain: ""                    # Active plugin domain
+registry_url: ""                     # Custom registry URL (default: GitHub)
 ```
 
 ## Configuration Commands
@@ -30,37 +34,26 @@ context_refresh_days: 30          # Prompt for review after N days
 ### Set a Value
 
 ```bash
-cto config set <key> <value>
+cio config set <key> <value>
 ```
 
 **Examples:**
 ```bash
-# Set API key
-cto config set api-key YOUR_API_KEY
-
-# Set default mode
-cto config set default-mode socratic
-
-# Set model
-cto config set model anthropic/claude-3.5-sonnet
+cio config set api-key YOUR_API_KEY
+cio config set default-mode socratic
+cio config set model anthropic/claude-3.5-sonnet
 ```
 
 ### Get a Value
 
 ```bash
-cto config get <key>
-```
-
-**Example:**
-```bash
-cto config get default-mode
-# Output: panel
+cio config get <key>
 ```
 
 ### List All Settings
 
 ```bash
-cto config list
+cio config list
 ```
 
 ## API Configuration
@@ -71,28 +64,28 @@ cto config list
 2. Create an API key
 3. Set the key:
    ```bash
-   cto config set api-key sk-or-v1-your-key-here
+   cio config set api-key sk-or-v1-your-key-here
    ```
 
 ### Anthropic Direct
 
 ```bash
-cto config set api-key sk-ant-your-key-here
-cto config set api-base https://api.anthropic.com
+cio config set api-key sk-ant-your-key-here
+cio config set api-base https://api.anthropic.com
 ```
 
 ### Local LLM (Ollama)
 
 ```bash
-cto config set api-base http://localhost:11434
-cto config set model llama2
+cio config set api-base http://localhost:11434
+cio config set model llama2
 ```
 
 ## Context Configuration
 
 ### Organization Context
 
-File: `.cto-advisory/context/organization.yaml`
+File: `.cio/context/organization.yaml`
 
 ```yaml
 crf_version: "0.1.0"
@@ -100,12 +93,10 @@ entity:
   id: "org-your-company"
   type: "organization"
   name: "Your Company"
-  description: "Brief company description"
   attributes:
     org_type: "company"
     industry: "fintech"
     stage: "series-a"
-    founded: 2022
     business_model: "B2B SaaS"
     size: "startup"
     compliance_frameworks:
@@ -115,7 +106,7 @@ entity:
 
 ### Team Context
 
-File: `.cto-advisory/context/teams.yaml`
+File: `.cio/context/teams.yaml`
 
 ```yaml
 crf_version: "0.1.0"
@@ -126,15 +117,7 @@ entity:
   attributes:
     org_type: "team"
     headcount: 15
-    skills:
-      - backend
-      - frontend
-      - platform
-    structure:
-      backend: 6
-      frontend: 4
-      platform: 3
-      mobile: 2
+    skills: [backend, frontend, platform]
     unfilled_roles:
       - Staff Engineer
       - Security Lead
@@ -142,7 +125,7 @@ entity:
 
 ### Systems Context
 
-File: `.cto-advisory/context/systems.yaml`
+File: `.cio/context/systems.yaml`
 
 ```yaml
 crf_version: "0.1.0"
@@ -151,25 +134,15 @@ entity:
   type: "system"
   name: "Main Platform"
   attributes:
-    system_type: "platform"
-    status: "production"
     hosting: "aws"
     primary_language: "typescript"
-    languages:
-      - typescript
-      - python
-      - go
-    technology_stack:
-      - ECS
-      - Lambda
-      - PostgreSQL
-      - Redis
+    technology_stack: [ECS, Lambda, PostgreSQL, Redis]
     deployment: "github-actions"
 ```
 
 ### Facts/Constraints
 
-File: `.cto-advisory/context/facts.yaml`
+File: `.cio/context/facts.yaml`
 
 ```yaml
 crf_version: "0.1.0"
@@ -188,14 +161,14 @@ entity:
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `CTO_API_KEY` | API key (overrides config) | - |
-| `CTO_CONFIG_DIR` | Configuration directory | `.cto-advisory` |
+| `CIO_API_KEY` | API key (overrides config) | — |
+| `CIO_CONFIG_DIR` | Configuration directory | `.cio` |
+| `CIO_DEBUG` | Enable debug mode | `false` |
 | `VITE_API_URL` | Frontend API URL | `http://localhost:8765` |
 
-**Example:**
 ```bash
-export CTO_API_KEY="sk-or-v1-your-key"
-cto ask "Should we adopt Kubernetes?"
+export CIO_API_KEY="sk-or-v1-your-key"
+cio ask "Should we adopt Kubernetes?"
 ```
 
 ## Advisor Configuration
@@ -203,7 +176,7 @@ cto ask "Should we adopt Kubernetes?"
 ### Default Advisors
 
 ```bash
-cto config set default-advisors cto,ciso,architect
+cio config set default-advisors cto,ciso,architect
 ```
 
 ### Specialist Auto-Summoning
@@ -218,12 +191,10 @@ When `auto_summon_specialists: true`, these keywords trigger inclusion:
 
 Disable auto-summoning:
 ```bash
-cto config set auto-summon-specialists false
+cio config set auto-summon-specialists false
 ```
 
 ## Mode Configuration
-
-### Available Modes
 
 | Mode | Description | Use Case |
 |------|-------------|----------|
@@ -232,111 +203,63 @@ cto config set auto-summon-specialists false
 | `advocate` | Challenge your decision | Validation |
 | `framework` | Structured comparison | Option evaluation |
 
-Set default:
 ```bash
-cto config set default-mode socratic
-```
+# Set default
+cio config set default-mode socratic
 
-Override per-query:
-```bash
-cto ask "AWS vs GCP" --mode framework
+# Override per-query
+cio ask "AWS vs GCP" --mode framework
 ```
 
 ## Server Configuration
 
-### API Server
-
 ```bash
-# Start with default port
-cto serve
+# Default port (8765)
+cio serve
 
 # Custom port
-cto serve --port 3000
-
-# With CORS for development
-cto serve --cors-origin http://localhost:5173
+cio serve --port 3000
 ```
 
 ### Frontend Connection
-
-Set the API URL for the frontend:
 
 ```bash
 # In frontend/.env
 VITE_API_URL=http://localhost:8765
 ```
 
-Or at runtime:
-```bash
-VITE_API_URL=http://api.example.com npm run dev
-```
-
 ## Plugin Configuration
 
-### Load a Plugin
-
 ```bash
-cto --plugin legal-advisory
+# Install from registry
+cio plugin install legal-advisory
+
+# Activate
+cio plugin use legal-advisory
+
+# Set via flag
+cio --plugin legal-advisory
 ```
 
-### Set Default Plugin
-
-```bash
-cto config set default-plugin cto-advisory
-```
-
-### Plugin Directory
-
-Plugins are loaded from:
-1. `./plugins/` (project-local)
-2. `~/.cto-advisory/plugins/` (user-global)
-
-## Advanced Settings
-
-### Timeout Configuration
-
-```yaml
-# In config.yaml
-api_timeout: 120        # seconds
-stream_timeout: 300     # seconds for streaming
-```
-
-### Logging
-
-```bash
-# Verbose output
-cto ask "question" --verbose
-
-# Debug mode
-CTO_DEBUG=true cto ask "question"
-```
-
-### Cache Settings
-
-```yaml
-# In config.yaml
-cache_decisions: true   # Cache recent decisions
-cache_ttl: 3600        # Cache TTL in seconds
-```
+Plugin directories:
+1. `~/.cio/plugins/installed/` — Registry plugins
+2. `~/.cio/plugins/custom/` — Custom plugins
+3. `./plugins/` — Project-local plugins
 
 ## Resetting Configuration
 
-### Reset to Defaults
-
 ```bash
-rm .cto-advisory/config.yaml
-cto init
-```
+# Reset config only
+rm .cio/config.yaml
+cio init
 
-### Clear All Data
-
-```bash
-rm -rf .cto-advisory
-cto init
+# Clear all data
+rm -rf .cio
+cio init
 ```
 
 ## Next Steps
 
-- [Usage Guide](USAGE.md) - Learn the CLI commands
-- [Plugin Development](PLUGINS.md) - Create custom domains
-- [Architecture](ARCHITECTURE.md) - System internals
+- [Usage Guide](USAGE.md) — Learn the CLI commands
+- [Plugin Development](PLUGINS.md) — Create custom domains
+- [Architecture](ARCHITECTURE.md) — System internals

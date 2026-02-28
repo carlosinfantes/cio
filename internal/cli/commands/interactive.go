@@ -4,8 +4,8 @@ package commands
 import (
 	"fmt"
 
-	"github.com/carlosinfantes/cto-advisory-board/internal/cli/output"
-	"github.com/carlosinfantes/cto-advisory-board/internal/cli/repl"
+	"github.com/carlosinfantes/cio/internal/cli/output"
+	"github.com/carlosinfantes/cio/internal/cli/repl"
 )
 
 // RunInteractive starts the interactive REPL mode.

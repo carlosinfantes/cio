@@ -1,4 +1,4 @@
-// Package types defines shared types for the CTO Advisory Board CLI.
+// Package types defines shared types for the CIO - Chief Intelligence Officer CLI.
 package types
 
 import "time"

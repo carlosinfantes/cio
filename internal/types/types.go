@@ -1,4 +1,4 @@
-// Package types defines shared types for the CTO Advisory Board CLI.
+// Package types defines shared types for the CIO - Chief Intelligence Officer CLI.
 package types
 
 import (
@@ -127,7 +127,7 @@ type Config struct {
 }
 
 // DefaultRegistryURL is the default plugin registry location.
-const DefaultRegistryURL = "https://github.com/cto-advisory-board/plugin-registry"
+const DefaultRegistryURL = "https://raw.githubusercontent.com/carlosinfantes/cio-plugin-registry/main"
 
 // DefaultConfig returns the default configuration.
 func DefaultConfig() Config {
@@ -142,7 +142,7 @@ func DefaultConfig() Config {
 		DRFVersion:              "0.1.0",
 		CRFVersion:              "0.1.0",
 		EnableContextValidation: true,
-		SchemaPath:              "../reasoning-formats",
+		SchemaPath:              "",
 		ActiveDomain:            "",
 		InstalledDomains:        []string{},
 		RegistryURL:             DefaultRegistryURL,

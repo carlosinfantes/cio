@@ -218,26 +218,20 @@ func (s *Server) streamingChat(ctx context.Context, sessionID, content string) e
 		return err
 	}
 
-	// Stream response chunks (simulate streaming for now)
-	words := strings.Fields(result.Response)
+	// Stream response in sentence-sized chunks
+	chunks := splitIntoChunks(result.Response)
 	var accumulated strings.Builder
 
-	for i, word := range words {
-		accumulated.WriteString(word)
-		if i < len(words)-1 {
-			accumulated.WriteString(" ")
-		}
+	for i, chunk := range chunks {
+		accumulated.WriteString(chunk)
 
 		streamManager.Send(sessionID, StreamEvent{
 			Event: "chunk",
 			Data: map[string]interface{}{
 				"content":  accumulated.String(),
-				"complete": i == len(words)-1,
+				"complete": i == len(chunks)-1,
 			},
 		})
-
-		// Small delay between chunks for visual effect
-		time.Sleep(20 * time.Millisecond)
 	}
 
 	// Send completion event
@@ -259,4 +253,111 @@ func (s *Server) streamingChat(ctx context.Context, sessionID, content string) e
 	}
 
 	return nil
+}
+
+// splitIntoChunks splits text into sentence-sized chunks for streaming.
+func splitIntoChunks(text string) []string {
+	var chunks []string
+	var current strings.Builder
+
+	for _, r := range text {
+		current.WriteRune(r)
+		// Split on sentence-ending punctuation followed by space, or on newlines
+		if (r == '.' || r == '!' || r == '?' || r == '\n') && current.Len() > 0 {
+			chunks = append(chunks, current.String())
+			current.Reset()
+		}
+	}
+
+	// Don't lose trailing text
+	if current.Len() > 0 {
+		chunks = append(chunks, current.String())
+	}
+
+	if len(chunks) == 0 {
+		chunks = []string{text}
+	}
+
+	return chunks
+}
+
+// handleStreamingChat handles POST requests for streaming chat responses via SSE.
+func (s *Server) handleStreamingChat(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// Extract session ID from path: /api/v1/chat/stream/{session_id}
+	path := strings.TrimPrefix(r.URL.Path, "/api/v1/chat/stream/")
+	if path == "" {
+		http.Error(w, "Session ID required", http.StatusBadRequest)
+		return
+	}
+	sessionID := strings.Split(path, "/")[0]
+
+	s.sessions.mu.RLock()
+	_, ok := s.sessions.sessions[sessionID]
+	s.sessions.mu.RUnlock()
+
+	if !ok {
+		http.Error(w, "Session not found", http.StatusNotFound)
+		return
+	}
+
+	var req struct {
+		Content string `json:"content"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	// Set SSE headers
+	w.Header().Set("Content-Type", "text/event-stream")
+	w.Header().Set("Cache-Control", "no-cache")
+	w.Header().Set("Connection", "keep-alive")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	flusher, ok := w.(http.Flusher)
+	if !ok {
+		http.Error(w, "Streaming unsupported", http.StatusInternalServerError)
+		return
+	}
+
+	// Connect to stream for this session
+	conn := streamManager.Connect(sessionID)
+	defer streamManager.Disconnect(sessionID)
+
+	// Process message in background
+	ctx := r.Context()
+	done := make(chan error, 1)
+	go func() {
+		done <- s.streamingChat(ctx, sessionID, req.Content)
+	}()
+
+	// Forward stream events to SSE response
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		case <-conn.Done:
+			return
+		case err := <-done:
+			if err != nil {
+				writeSSEEvent(w, StreamEvent{
+					Event: "error",
+					Data:  map[string]string{"message": err.Error()},
+				})
+				flusher.Flush()
+			}
+			return
+		case event := <-conn.Channel:
+			writeSSEEvent(w, event)
+			flusher.Flush()
+			if event.Event == "complete" {
+				return
+			}
+		}
+	}
 }

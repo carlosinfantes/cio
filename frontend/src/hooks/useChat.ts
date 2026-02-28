@@ -24,7 +24,7 @@ interface UseChatReturn {
 }
 
 export function useChat(options: UseChatOptions = {}): UseChatReturn {
-  const { domain = 'cto-advisory', onEscalation, onError } = options;
+  const { domain = 'cio', onEscalation, onError } = options;
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);

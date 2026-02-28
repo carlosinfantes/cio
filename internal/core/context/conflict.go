@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/carlosinfantes/cto-advisory-board/internal/core/decisions"
-	"github.com/carlosinfantes/cto-advisory-board/internal/types"
+	"github.com/carlosinfantes/cio/internal/core/decisions"
+	"github.com/carlosinfantes/cio/internal/types"
 )
 
 // DetectConflicts checks for contradictions between CRF context and recent decisions.

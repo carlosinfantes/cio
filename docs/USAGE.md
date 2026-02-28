@@ -7,22 +7,22 @@
 Start an interactive session with Jordan (the facilitator):
 
 ```bash
-cto
+cio
 ```
 
 You'll see a mode selector:
 ```
 ╔══════════════════════════════════════════════════════════╗
-║           CTO ADVISORY BOARD                              ║
+║           CIO ADVISORY BOARD                            ║
 ╚══════════════════════════════════════════════════════════╝
 
 Select mode:
-  [1] Discover - Explore with Jordan
-  [2] Decide   - Get panel advice
-  [3] Challenge - Devil's advocate
-  [4] Framework - Compare options
-  [5] Context  - Review/update
-  [6] History  - Browse decisions
+  [1] Discover  — Explore with Jordan
+  [2] Decide    — Get panel advice
+  [3] Challenge — Devil's advocate
+  [4] Framework — Compare options
+  [5] Context   — Review/update
+  [6] History   — Browse decisions
 
 Choice:
 ```
@@ -31,19 +31,19 @@ Choice:
 
 ```bash
 # Default panel mode
-cto ask "Should we adopt Kubernetes?"
+cio ask "Should we adopt Kubernetes?"
 
 # With JSON output
-cto ask "Should we adopt Kubernetes?" --json
+cio ask "Should we adopt Kubernetes?" --json
 
 # Specific mode
-cto ask "AWS vs GCP" --mode framework
+cio ask "AWS vs GCP" --mode framework
 
 # Include specific advisors
-cto ask "Security concerns with microservices" --advisors cto,ciso
+cio ask "Security concerns with microservices" --advisors cto,ciso
 
 # Force-include specialists
-cto ask "Is this migration worth the cost?" --include cfo
+cio ask "Is this migration worth the cost?" --include cfo
 ```
 
 ## Interaction Modes
@@ -53,7 +53,7 @@ cto ask "Is this migration worth the cost?" --include cfo
 Full advisory board discussion with all perspectives:
 
 ```bash
-cto ask "Should we migrate to microservices?"
+cio ask "Should we migrate to microservices?"
 ```
 
 **Output includes:**
@@ -68,7 +68,7 @@ cto ask "Should we migrate to microservices?"
 Jordan asks clarifying questions before consulting the panel:
 
 ```bash
-cto ask "We need to scale" --mode socratic
+cio ask "We need to scale" --mode socratic
 ```
 
 **Flow:**
@@ -81,7 +81,7 @@ cto ask "We need to scale" --mode socratic
 Challenge an existing decision:
 
 ```bash
-cto ask "We've decided to use MongoDB" --mode advocate
+cio ask "We've decided to use MongoDB" --mode advocate
 ```
 
 **Output includes:**
@@ -95,7 +95,7 @@ cto ask "We've decided to use MongoDB" --mode advocate
 Structured comparison of options:
 
 ```bash
-cto ask "AWS vs GCP vs Azure" --mode framework
+cio ask "AWS vs GCP vs Azure" --mode framework
 ```
 
 **Output includes:**
@@ -104,32 +104,88 @@ cto ask "AWS vs GCP vs Azure" --mode framework
 - Risk analysis per option
 - Recommendation with confidence level
 
+## Plugin Management
+
+### Browse the Registry
+
+```bash
+cio plugin search
+```
+
+Shows all available plugins with stars, downloads, and featured highlights.
+
+### Search by Keyword
+
+```bash
+cio plugin search "finance"
+```
+
+### Install a Plugin
+
+```bash
+cio plugin install startup-advisory
+```
+
+### Activate a Plugin
+
+```bash
+cio plugin use startup-advisory
+```
+
+### List Installed Plugins
+
+```bash
+cio plugin list
+```
+
+### Get Plugin Details
+
+```bash
+cio plugin info startup-advisory
+```
+
+### Update Plugins
+
+```bash
+# Update all
+cio plugin update
+
+# Update specific
+cio plugin update startup-advisory
+```
+
+### Create a Custom Plugin
+
+```bash
+cio plugin create my-domain
+```
+
 ## Context Management
 
 ### View Context
 
 ```bash
 # Summary view
-cto context show
+cio context show
 
 # Specific file
-cto context show organization
+cio context show organization
 
 # YAML format
-cto context show --format yaml
+cio context show --format yaml
 ```
 
 ### Edit Context
 
 ```bash
 # Open in editor
-cto context edit organization
+cio context edit organization
 
 # Check for staleness
-cto context check
+cio context check
 
 # AI-assisted update
-cto context update
+cio context update
 ```
 
 ## Decision History
@@ -138,32 +194,32 @@ cto context update
 
 ```bash
 # All decisions
-cto history list
+cio history list
 
 # Filter by status
-cto history list --status approved
+cio history list --status approved
 
 # Filter by tag
-cto history list --tag security
+cio history list --tag security
 
 # Search
-cto history search "kubernetes"
+cio history search "kubernetes"
 ```
 
 ### View Decision
 
 ```bash
-cto history show dec-2024-01-12-001
+cio history show dec-2024-01-12-001
 ```
 
 ### Update Decision
 
 ```bash
 # Change status
-cto history status dec-2024-01-12-001 approved
+cio history status dec-2024-01-12-001 approved
 
 # Add tag
-cto history tag dec-2024-01-12-001 infrastructure
+cio history tag dec-2024-01-12-001 infrastructure
 ```
 
 ## API Server
@@ -172,13 +228,13 @@ cto history tag dec-2024-01-12-001 infrastructure
 
 ```bash
 # Default port (8765)
-cto serve
+cio serve
 
 # Custom port
-cto serve --port 3000
+cio serve --port 3000
 ```
 
-### API Endpoints
+### API Examples
 
 #### Create Session
 
@@ -186,12 +242,11 @@ cto serve --port 3000
 curl -X POST http://localhost:8765/api/v1/session
 ```
 
-**Response:**
 ```json
 {
   "session_id": "abc123",
   "phase": "init",
-  "created_at": "2024-01-15T10:00:00Z"
+  "created_at": "2026-02-28T10:00:00Z"
 }
 ```
 
@@ -203,49 +258,21 @@ curl -X POST http://localhost:8765/api/v1/chat/abc123/message \
   -d '{"content": "Should we migrate to microservices?"}'
 ```
 
-**Response:**
-```json
-{
-  "response": "I'd like to understand your situation better...",
-  "phase": "context_gathering",
-  "ready_for_panel": false
-}
-```
-
 #### Stream Responses (SSE)
 
 ```bash
 curl http://localhost:8765/api/v1/stream/abc123
 ```
 
-**Events:**
 ```
 event: connected
 data: {"session_id": "abc123"}
-
-event: thinking
-data: {"status": "processing"}
-
-event: chunk
-data: {"content": "I'd like to understand", "complete": false}
 
 event: chunk
 data: {"content": "I'd like to understand your situation", "complete": false}
 
 event: complete
 data: {"response": "...", "phase": "context_gathering", "ready_for_panel": false}
-```
-
-#### Get Context
-
-```bash
-curl http://localhost:8765/api/v1/context
-```
-
-#### List Decisions
-
-```bash
-curl http://localhost:8765/api/v1/decisions
 ```
 
 #### Direct Panel Query
@@ -265,64 +292,22 @@ curl -X POST http://localhost:8765/api/v1/panel/ask \
 ### Terminal (Default)
 
 Rich formatted output with colored boxes:
-
 ```bash
-cto ask "Should we adopt Kubernetes?"
+cio ask "Should we adopt Kubernetes?"
 ```
 
 ### JSON
 
 Machine-readable output:
-
 ```bash
-cto ask "Should we adopt Kubernetes?" --json
-```
-
-**Output:**
-```json
-{
-  "question": "Should we adopt Kubernetes?",
-  "mode": "panel",
-  "advisors": ["cto", "ciso", "vp-eng", "architect"],
-  "responses": [
-    {
-      "advisor": "Victoria Chen",
-      "role": "CTO",
-      "content": "..."
-    }
-  ],
-  "synthesis": "...",
-  "decision_id": "dec-2024-01-15-001"
-}
+cio ask "Should we adopt Kubernetes?" --json
 ```
 
 ### Markdown
 
 Clean markdown for documentation:
-
 ```bash
-cto ask "Should we adopt Kubernetes?" --format markdown
-```
-
-## Working with Plugins
-
-### List Available Plugins
-
-```bash
-cto plugins list
-```
-
-### Use a Specific Plugin
-
-```bash
-cto --plugin legal-advisory
-```
-
-### In a Session
-
-```bash
-cto
-# Then select plugin when prompted
+cio ask "Should we adopt Kubernetes?" --format markdown
 ```
 
 ## Keyboard Shortcuts (Interactive Mode)
@@ -332,58 +317,50 @@ cto
 | `Ctrl+M` | Change mode |
 | `Ctrl+C` | Exit |
 | `Ctrl+D` | End input |
-| `↑/↓` | Navigate history |
+| `Up/Down` | Navigate history |
 
 ## Examples
 
 ### Quick Security Review
 
 ```bash
-cto ask "Review the security implications of using JWT tokens" --advisors ciso,architect
+cio ask "Review security implications of using JWT tokens" --advisors ciso,architect
 ```
 
 ### Cost Analysis
 
 ```bash
-cto ask "What's the TCO of migrating to Kubernetes?" --include cfo
+cio ask "What's the TCO of migrating to Kubernetes?" --include cfo
 ```
 
 ### Architecture Decision
 
 ```bash
-cto ask "Monolith vs microservices for our stage" --mode framework
+cio ask "Monolith vs microservices for our stage" --mode framework
 ```
 
 ### Challenge a Decision
 
 ```bash
-cto ask "We've decided to rewrite in Rust" --mode advocate
+cio ask "We've decided to rewrite in Rust" --mode advocate
 ```
 
 ### Explore a Problem
 
 ```bash
-cto ask "We're having scaling issues" --mode socratic
+cio ask "We're having scaling issues" --mode socratic
 ```
 
 ## Best Practices
 
-1. **Provide Context**: The more context in your `.cto-advisory/context/` files, the more relevant the advice.
-
-2. **Use Appropriate Modes**:
-   - `panel` for complex decisions
-   - `socratic` for unclear problems
-   - `advocate` to validate decisions
-   - `framework` for comparing options
-
-3. **Track Decisions**: Use `--save` (default) to build decision history for future reference.
-
-4. **Review Context Regularly**: Run `cto context check` monthly to keep context current.
-
-5. **Include Relevant Specialists**: Use `--include` when you know budget, product, or infrastructure perspectives are needed.
+1. **Provide context** — The more context in `.cio/context/`, the more relevant the advice
+2. **Use appropriate modes** — `panel` for decisions, `socratic` for unclear problems, `advocate` to validate, `framework` to compare
+3. **Track decisions** — Decisions are saved by default for future reference
+4. **Review context regularly** — Run `cio context check` monthly to keep context current
+5. **Include specialists** — Use `--include` when budget, product, or infrastructure perspectives are needed
 
 ## Next Steps
 
-- [Configuration](CONFIGURATION.md) - Customize your setup
-- [Plugin Development](PLUGINS.md) - Create custom domains
-- [Architecture](ARCHITECTURE.md) - System internals
+- [Configuration](CONFIGURATION.md) — Customize your setup
+- [Plugin Development](PLUGINS.md) — Create custom domains
+- [Architecture](ARCHITECTURE.md) — System internals

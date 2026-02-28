@@ -2,14 +2,37 @@
 
 ## Overview
 
-The plugin system allows you to create domain-specific advisory boards. Each plugin defines its own facilitator, advisors, specialists, and context entity types.
+The plugin system allows you to create domain-specific advisory boards. Each plugin defines its own facilitator, advisors, specialists, and context entity types. Plugins can be installed from the central registry or created locally.
+
+## Plugin Registry
+
+CIO has a central plugin registry with 13 official plugins:
+
+```bash
+# Browse all plugins
+cio plugin search
+
+# Search by keyword
+cio plugin search "finance"
+
+# Install
+cio plugin install startup-advisory
+
+# Activate
+cio plugin use startup-advisory
+```
 
 ## Plugin Structure
 
 ```
-plugins/
-└── your-domain/
-    └── manifest.yaml
+my-domain/
+├── manifest.yaml          # Required: plugin definition
+├── settings.yaml          # Optional: plugin settings
+├── personas/              # Optional: extended persona files
+│   └── specialists/
+├── cognitive/             # Optional: reasoning frameworks
+│   └── frameworks/
+└── prompts/               # Optional: custom prompts
 ```
 
 ## Manifest Schema
@@ -17,202 +40,129 @@ plugins/
 ### Basic Example
 
 ```yaml
-# plugins/your-domain/manifest.yaml
-domain: your-domain
+domain: my-domain
 version: "1.0.0"
-display_name: "Your Domain Advisory Board"
-description: "Advisory board for your specific domain"
+display_name: "My Domain Advisory Board"
+description: "Advisory board for my specific domain"
+author: "Your Name"
+license: "MIT"
+emoji: "🎯"
 
 facilitator:
   id: "guide"
   name: "Guide Name"
   role: "Domain Intake Specialist"
-  personality: "Friendly, thorough, asks clarifying questions"
+  emoji: "💭"
+  thinking_style: "Socratic questioning to draw out the full picture"
 
 core_advisors:
   - id: "expert-1"
     name: "Expert One"
     role: "Senior Advisor"
+    emoji: "🎯"
     thinking_style: "How does this fit the domain requirements?"
+    priorities:
+      - Quality
+      - Efficiency
 
 specialists:
   - id: "specialist-1"
     name: "Specialist One"
     role: "Specialist Role"
+    emoji: "🔧"
     keywords:
       - keyword1
       - keyword2
+
+decision_domains:
+  - strategy
+  - operations
 ```
 
-### Complete Example: Legal Advisory
+### Complete Example
 
 ```yaml
-# plugins/legal-advisory/manifest.yaml
 domain: legal-advisory
 version: "1.0.0"
 display_name: "Legal Advisory Board"
 description: "AI-powered legal advisory for business decisions"
+author: "CIO Team"
+emoji: "⚖️"
 
 facilitator:
   id: "alex"
   name: "Alex Rivera"
   role: "Legal Intake Specialist"
+  emoji: "💭"
   personality: |
     Professional, methodical, ensures all relevant facts are gathered.
     Asks about jurisdiction, parties involved, timeline, and documentation.
-  prompt_additions: |
-    Always ask about:
-    - Jurisdiction and applicable law
-    - Parties involved and their relationships
-    - Timeline and deadlines
-    - Existing documentation or agreements
 
 core_advisors:
   - id: "corporate-counsel"
     name: "Margaret Chen"
     role: "General Counsel"
+    emoji: "⚖️"
     color: "blue"
     thinking_style: "What's the corporate governance angle?"
-    personality: |
-      Experienced corporate attorney with 20 years in M&A and governance.
-      Focuses on fiduciary duties, board responsibilities, and shareholder interests.
     expertise:
       - Corporate governance
       - M&A transactions
-      - Board advisory
-      - Shareholder relations
 
   - id: "litigation"
     name: "James Morrison"
     role: "Head of Litigation"
+    emoji: "🛡️"
     color: "red"
     thinking_style: "What's our exposure and how do we protect against it?"
-    personality: |
-      Former federal prosecutor, now defense-focused.
-      Always considers worst-case scenarios and evidence preservation.
-    expertise:
-      - Civil litigation
-      - Dispute resolution
-      - Risk assessment
-      - Evidence strategy
 
   - id: "contracts"
     name: "Sarah Kim"
     role: "Commercial Contracts Lead"
+    emoji: "📝"
     color: "yellow"
     thinking_style: "What do the agreements actually say?"
-    personality: |
-      Detail-oriented contracts specialist.
-      Reads every clause and considers enforcement scenarios.
-    expertise:
-      - Contract drafting
-      - Commercial agreements
-      - Terms negotiation
-      - SLA management
 
   - id: "compliance"
     name: "Robert Williams"
     role: "Chief Compliance Officer"
+    emoji: "📋"
     color: "cyan"
     thinking_style: "Are we meeting our regulatory obligations?"
-    personality: |
-      Regulatory expert across multiple industries.
-      Proactive about compliance frameworks and audit readiness.
-    expertise:
-      - Regulatory compliance
-      - Policy development
-      - Audit preparation
-      - Risk management
 
 specialists:
   - id: "ip-counsel"
     name: "Jennifer Wu"
     role: "IP Counsel"
-    color: "magenta"
-    thinking_style: "How do we protect and leverage our intellectual property?"
-    keywords:
-      - patent
-      - trademark
-      - copyright
-      - trade secret
-      - licensing
-      - IP
-    expertise:
-      - Patent strategy
-      - Trademark registration
-      - Copyright protection
-      - Licensing agreements
+    emoji: "💡"
+    keywords: [patent, trademark, copyright, trade secret, licensing, IP]
 
   - id: "employment"
     name: "Michael Davis"
     role: "Employment Law Specialist"
-    color: "magenta"
-    thinking_style: "What are the employment law implications?"
-    keywords:
-      - employee
-      - hiring
-      - termination
-      - discrimination
-      - workplace
-      - HR
-      - benefits
-    expertise:
-      - Employment contracts
-      - Workplace policies
-      - Discrimination defense
-      - Benefits compliance
+    emoji: "👥"
+    keywords: [employee, hiring, termination, discrimination, workplace, HR]
 
   - id: "privacy"
     name: "Emma Thompson"
     role: "Privacy & Data Protection"
-    color: "magenta"
-    thinking_style: "How does this impact data privacy compliance?"
-    keywords:
-      - GDPR
-      - CCPA
-      - privacy
-      - data protection
-      - personal data
-      - consent
-    expertise:
-      - Privacy regulations
-      - Data protection
-      - Consent management
-      - Cross-border transfers
+    emoji: "🔒"
+    keywords: [GDPR, CCPA, privacy, data protection, personal data, consent]
 
 context_entities:
   - type: "client"
     description: "Client or company information"
-    fields:
-      - name
-      - industry
-      - jurisdiction
-      - size
+    fields: [name, industry, jurisdiction, size]
 
   - type: "matter"
     description: "Legal matter or case"
-    fields:
-      - title
-      - type
-      - status
-      - deadline
-
-  - type: "jurisdiction"
-    description: "Applicable jurisdiction"
-    fields:
-      - country
-      - state
-      - governing_law
+    fields: [title, type, status, deadline]
 
 escalation_criteria:
-  context_required:
-    - client
-    - matter
-    - jurisdiction
+  context_required: [client, matter]
   questions_required:
     - "What is the primary legal issue?"
     - "What outcome are you seeking?"
-    - "What is your timeline?"
 ```
 
 ## Manifest Fields Reference
@@ -221,10 +171,14 @@ escalation_criteria:
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `domain` | string | Yes | Unique identifier for the plugin |
+| `domain` | string | Yes | Unique identifier |
 | `version` | string | Yes | Semantic version (e.g., "1.0.0") |
 | `display_name` | string | Yes | Human-readable name |
 | `description` | string | No | Brief description |
+| `author` | string | No | Plugin author |
+| `license` | string | No | License type |
+| `emoji` | string | No | Plugin emoji for display |
+| `homepage` | string | No | Project URL |
 
 ### Facilitator
 
@@ -233,8 +187,10 @@ escalation_criteria:
 | `id` | string | Yes | Unique identifier |
 | `name` | string | Yes | Display name |
 | `role` | string | Yes | Role description |
+| `emoji` | string | No | Display emoji |
+| `color` | string | No | Terminal color code |
+| `thinking_style` | string | No | Approach to facilitation |
 | `personality` | string | No | Personality traits |
-| `prompt_additions` | string | No | Additional prompt instructions |
 
 ### Advisors (Core & Specialists)
 
@@ -243,215 +199,132 @@ escalation_criteria:
 | `id` | string | Yes | Unique identifier |
 | `name` | string | Yes | Display name |
 | `role` | string | Yes | Role title |
+| `emoji` | string | No | Display emoji |
 | `color` | string | No | Terminal color |
-| `thinking_style` | string | Yes | Characteristic question |
+| `thinking_style` | string | Yes | Characteristic question/approach |
 | `personality` | string | No | Detailed personality |
 | `expertise` | array | No | Areas of expertise |
+| `priorities` | array | No | Key priorities |
 | `keywords` | array | Specialists only | Auto-summon triggers |
 
-### Context Entities
+## Creating a Plugin
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `type` | string | Yes | Entity type name |
-| `description` | string | No | Entity description |
-| `fields` | array | No | Required fields |
+### Option 1: From Template
 
-### Escalation Criteria
+```bash
+cio plugin create my-domain
+```
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `context_required` | array | Entity types needed before escalation |
-| `questions_required` | array | Questions that must be answered |
+This scaffolds the full directory structure with template files.
+
+### Option 2: Manual
+
+```bash
+mkdir -p ~/.cio/plugins/custom/my-domain
+```
+
+Create `manifest.yaml` with the schema above.
+
+### Option 3: Install and Customize
+
+```bash
+# Install an existing plugin as a starting point
+cio plugin install legal-advisory
+
+# Copy to custom directory and modify
+cp -r ~/.cio/plugins/installed/legal-advisory ~/.cio/plugins/custom/my-custom
+```
 
 ## Loading Plugins
-
-### Programmatically
-
-```go
-import "github.com/carlosinfantes/cto-advisory-board/internal/plugins"
-
-// Get the registry
-registry := plugins.GetRegistry()
-
-// Load a plugin
-err := registry.LoadPlugin("plugins/legal-advisory")
-
-// Set as active
-registry.SetActive("legal-advisory")
-
-// Get active plugin
-plugin := registry.GetActive()
-```
 
 ### CLI
 
 ```bash
-# Use a specific plugin
-cto --plugin legal-advisory
+# Activate an installed plugin
+cio plugin use legal-advisory
 
-# Set default plugin
-cto config set default-plugin legal-advisory
+# Use a specific plugin for one session
+cio --plugin legal-advisory
+```
+
+### Programmatically
+
+```go
+import "github.com/carlosinfantes/cio/internal/plugins"
+
+registry := plugins.GetRegistry()
+err := registry.LoadPlugin("plugins/legal-advisory")
+registry.SetActive("legal-advisory")
+plugin := registry.GetActive()
 ```
 
 ## Plugin Locations
 
 Plugins are loaded from these locations (in order):
 
-1. `./plugins/` - Project-local plugins
-2. `~/.cto-advisory/plugins/` - User-global plugins
-3. Built-in plugins (cto-advisory)
-
-## Creating a New Plugin
-
-### Step 1: Create Directory
-
-```bash
-mkdir -p plugins/my-domain
-```
-
-### Step 2: Create Manifest
-
-```bash
-touch plugins/my-domain/manifest.yaml
-```
-
-### Step 3: Define Content
-
-```yaml
-domain: my-domain
-version: "1.0.0"
-display_name: "My Domain Advisory"
-description: "Custom advisory for my domain"
-
-facilitator:
-  id: "guide"
-  name: "Domain Guide"
-  role: "Intake Specialist"
-
-core_advisors:
-  - id: "advisor-1"
-    name: "Advisor One"
-    role: "Senior Expert"
-    thinking_style: "What's the key consideration here?"
-```
-
-### Step 4: Test
-
-```bash
-cto --plugin my-domain
-```
+1. `~/.cio/plugins/installed/` — Registry plugins
+2. `~/.cio/plugins/custom/` — Custom plugins
+3. `./plugins/` — Project-local plugins
+4. Built-in plugins (cio)
 
 ## Best Practices
 
 ### 1. Clear Personas
 
 Each advisor should have:
-- Distinct personality
-- Specific expertise area
+- Distinct personality and expertise
 - Characteristic thinking style
-- Clear role differentiation
+- Clear role differentiation from other advisors
 
 ### 2. Relevant Keywords
 
 For specialists, choose keywords that:
 - Are specific to their expertise
-- Users would naturally use
-- Don't overlap with other specialists
+- Users would naturally use in questions
+- Don't overlap heavily with other specialists
 
-### 3. Thoughtful Context Entities
-
-Define entities that:
-- Capture essential domain information
-- Have clear, minimal fields
-- Support the advisory process
-
-### 4. Appropriate Escalation Criteria
+### 3. Appropriate Escalation Criteria
 
 Set criteria that ensure:
 - Sufficient context before panel discussion
 - Key questions are answered
-- Advisors have what they need
+- Advisors have what they need to give useful advice
 
-## Example Plugins
+### 4. Emoji Convention
 
-### Architecture Advisory
+- Use a single emoji per persona for consistent display
+- Choose emojis that relate to the advisor's role
+- The plugin-level emoji appears in `cio plugin search` results
 
-```yaml
-domain: architecture-advisory
-display_name: "Architecture Advisory Board"
+## Publishing to the Registry
 
-facilitator:
-  id: "intake"
-  name: "Project Intake"
-  role: "Architecture Intake Specialist"
+To submit your plugin to the official registry:
 
-core_advisors:
-  - id: "systems"
-    name: "Systems Architect"
-    thinking_style: "What are the system boundaries and interfaces?"
+1. Package your plugin as a `.tar.gz`:
+   ```bash
+   cd my-domain && tar czf my-domain-1.0.0.tar.gz *
+   ```
 
-  - id: "structural"
-    name: "Structural Engineer"
-    thinking_style: "What are the load-bearing requirements?"
+2. Submit a pull request to [cio-plugin-registry](https://github.com/carlosinfantes/cio-plugin-registry)
 
-  - id: "sustainability"
-    name: "Sustainability Consultant"
-    thinking_style: "What's the environmental impact?"
-```
-
-### HR Advisory
-
-```yaml
-domain: hr-advisory
-display_name: "HR Advisory Board"
-
-facilitator:
-  id: "hr-intake"
-  name: "HR Support"
-  role: "HR Intake Specialist"
-
-core_advisors:
-  - id: "talent"
-    name: "Talent Director"
-    thinking_style: "How does this affect our people strategy?"
-
-  - id: "compensation"
-    name: "Compensation Manager"
-    thinking_style: "What's the compensation and benefits angle?"
-
-  - id: "culture"
-    name: "Culture Lead"
-    thinking_style: "How does this align with our values?"
-```
+3. Include an entry for `index.json` with your plugin metadata
 
 ## Troubleshooting
 
 ### Plugin Not Loading
 
-1. Check manifest syntax:
-   ```bash
-   cat plugins/my-domain/manifest.yaml | yq .
-   ```
-
-2. Verify required fields are present
-
-3. Check for duplicate domain names
+1. Check manifest syntax: `cat manifest.yaml`
+2. Verify required fields (`domain`, `version`, `display_name`, `facilitator`, `core_advisors`)
+3. Check for duplicate domain names across plugin directories
 
 ### Specialists Not Auto-Summoning
 
 1. Verify keywords are lowercase
-2. Check keyword specificity
-3. Test with explicit `--include`
-
-### Context Entities Not Working
-
-1. Verify entity type names match
-2. Check field definitions
-3. Review escalation criteria
+2. Ensure `auto_summon_specialists: true` in config
+3. Test with explicit `--include specialist-id`
 
 ## Next Steps
 
-- [Architecture](ARCHITECTURE.md) - System internals
-- [Configuration](CONFIGURATION.md) - Customize settings
-- [Usage Guide](USAGE.md) - CLI commands
+- [Architecture](ARCHITECTURE.md) — System internals
+- [Configuration](CONFIGURATION.md) — Customize settings
+- [Usage Guide](USAGE.md) — CLI commands

@@ -8,8 +8,8 @@ import (
 
 	"gopkg.in/yaml.v3"
 
-	"github.com/carlosinfantes/cto-advisory-board/internal/config"
-	"github.com/carlosinfantes/cto-advisory-board/internal/types"
+	"github.com/carlosinfantes/cio/internal/config"
+	"github.com/carlosinfantes/cio/internal/types"
 )
 
 // PluginPackage represents a fully loaded plugin with all its components.
@@ -280,19 +280,40 @@ func (pkg *PluginPackage) GetPrompt(name string) string {
 // LoadInstalledPlugins loads all installed plugin packages.
 func LoadInstalledPlugins() ([]*PluginPackage, error) {
 	var packages []*PluginPackage
+	seen := make(map[string]bool)
 
-	// Load from installed directory
+	// Load bundled plugins first
+	bundledDir, err := GetBundledPluginsDir()
+	if err == nil {
+		bundled, _ := loadPluginsFromDir(bundledDir)
+		for _, pkg := range bundled {
+			packages = append(packages, pkg)
+			seen[pkg.Manifest.Domain] = true
+		}
+	}
+
+	// Load from installed directory (overrides bundled)
 	installedDir, err := config.GetInstalledPluginsDir()
 	if err == nil {
 		installed, _ := loadPluginsFromDir(installedDir)
-		packages = append(packages, installed...)
+		for _, pkg := range installed {
+			if !seen[pkg.Manifest.Domain] {
+				packages = append(packages, pkg)
+				seen[pkg.Manifest.Domain] = true
+			}
+		}
 	}
 
-	// Load from custom directory (higher priority)
+	// Load from custom directory (highest priority)
 	customDir, err := config.GetCustomPluginsDir()
 	if err == nil {
 		custom, _ := loadPluginsFromDir(customDir)
-		packages = append(packages, custom...)
+		for _, pkg := range custom {
+			if !seen[pkg.Manifest.Domain] {
+				packages = append(packages, pkg)
+				seen[pkg.Manifest.Domain] = true
+			}
+		}
 	}
 
 	return packages, nil

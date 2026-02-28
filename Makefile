@@ -1,6 +1,6 @@
-# CTO Advisory Board - Build Makefile
+# CIO - Chief Intelligence Officer - Build Makefile
 
-BINARY_NAME=cto-advisory
+BINARY_NAME=cio
 VERSION?=1.0.0
 BUILD_DIR=dist
 GO=go
@@ -14,11 +14,11 @@ all: build
 
 # Build for current platform
 build:
-	$(GO) build $(LDFLAGS) -o $(BINARY_NAME) ./cmd/cto-advisory
+	$(GO) build $(LDFLAGS) -o $(BINARY_NAME) ./cmd/cio
 
 # Build with debug info
 build-debug:
-	$(GO) build -o $(BINARY_NAME) ./cmd/cto-advisory
+	$(GO) build -o $(BINARY_NAME) ./cmd/cio
 
 # Clean build artifacts
 clean:
@@ -41,26 +41,26 @@ test-coverage:
 
 # Install to GOPATH/bin
 install:
-	$(GO) install $(LDFLAGS) ./cmd/cto-advisory
+	$(GO) install $(LDFLAGS) ./cmd/cio
 
 # Cross-compile for all platforms
 cross-compile: clean
 	mkdir -p $(BUILD_DIR)
 
 	# macOS ARM64 (Apple Silicon)
-	GOOS=darwin GOARCH=arm64 $(GO) build $(LDFLAGS) -o $(BUILD_DIR)/$(BINARY_NAME)-darwin-arm64 ./cmd/cto-advisory
+	GOOS=darwin GOARCH=arm64 $(GO) build $(LDFLAGS) -o $(BUILD_DIR)/$(BINARY_NAME)-darwin-arm64 ./cmd/cio
 
 	# macOS AMD64 (Intel)
-	GOOS=darwin GOARCH=amd64 $(GO) build $(LDFLAGS) -o $(BUILD_DIR)/$(BINARY_NAME)-darwin-amd64 ./cmd/cto-advisory
+	GOOS=darwin GOARCH=amd64 $(GO) build $(LDFLAGS) -o $(BUILD_DIR)/$(BINARY_NAME)-darwin-amd64 ./cmd/cio
 
 	# Linux AMD64
-	GOOS=linux GOARCH=amd64 $(GO) build $(LDFLAGS) -o $(BUILD_DIR)/$(BINARY_NAME)-linux-amd64 ./cmd/cto-advisory
+	GOOS=linux GOARCH=amd64 $(GO) build $(LDFLAGS) -o $(BUILD_DIR)/$(BINARY_NAME)-linux-amd64 ./cmd/cio
 
 	# Linux ARM64
-	GOOS=linux GOARCH=arm64 $(GO) build $(LDFLAGS) -o $(BUILD_DIR)/$(BINARY_NAME)-linux-arm64 ./cmd/cto-advisory
+	GOOS=linux GOARCH=arm64 $(GO) build $(LDFLAGS) -o $(BUILD_DIR)/$(BINARY_NAME)-linux-arm64 ./cmd/cio
 
 	# Windows AMD64
-	GOOS=windows GOARCH=amd64 $(GO) build $(LDFLAGS) -o $(BUILD_DIR)/$(BINARY_NAME)-windows-amd64.exe ./cmd/cto-advisory
+	GOOS=windows GOARCH=amd64 $(GO) build $(LDFLAGS) -o $(BUILD_DIR)/$(BINARY_NAME)-windows-amd64.exe ./cmd/cio
 
 	# List built binaries
 	@echo "\nBuilt binaries:"
@@ -68,7 +68,7 @@ cross-compile: clean
 
 # Build for current platform with size optimization
 build-release:
-	$(GO) build $(LDFLAGS) -o $(BINARY_NAME) ./cmd/cto-advisory
+	$(GO) build $(LDFLAGS) -o $(BINARY_NAME) ./cmd/cio
 	@echo "Binary size:"
 	@ls -lh $(BINARY_NAME)
 
@@ -87,7 +87,7 @@ deps:
 
 # Show help
 help:
-	@echo "CTO Advisory Board - Build Commands"
+	@echo "CIO - Chief Intelligence Officer - Build Commands"
 	@echo ""
 	@echo "Usage:"
 	@echo "  make build          Build for current platform"

@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/carlosinfantes/cto-advisory-board/internal/config"
-	"github.com/carlosinfantes/cto-advisory-board/internal/types"
+	"github.com/carlosinfantes/cio/internal/config"
+	"github.com/carlosinfantes/cio/internal/types"
 )
 
 // Session maintains state for an interactive session.

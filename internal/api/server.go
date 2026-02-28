@@ -1,4 +1,4 @@
-// Package api implements the HTTP API server for the CTO Advisory Board.
+// Package api implements the HTTP API server for CIO.
 // This enables building React frontends that communicate with the advisory engine.
 package api
 
@@ -13,10 +13,12 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/carlosinfantes/cto-advisory-board/internal/core/facilitation"
-	"github.com/carlosinfantes/cto-advisory-board/internal/core/llm"
-	"github.com/carlosinfantes/cto-advisory-board/internal/storage"
-	"github.com/carlosinfantes/cto-advisory-board/internal/types"
+	"github.com/carlosinfantes/cio/internal/core/advisors"
+	"github.com/carlosinfantes/cio/internal/core/facilitation"
+	"github.com/carlosinfantes/cio/internal/core/llm"
+	"github.com/carlosinfantes/cio/internal/core/modes"
+	"github.com/carlosinfantes/cio/internal/storage"
+	"github.com/carlosinfantes/cio/internal/types"
 )
 
 // Server is the HTTP API server.
@@ -104,6 +106,9 @@ func (s *Server) registerRoutes() {
 	s.mux.HandleFunc("/api/v1/session", cors(s.handleSession))
 	s.mux.HandleFunc("/api/v1/session/", cors(s.handleSessionByID))
 
+	// Streaming chat (must be registered before /api/v1/chat/ for correct prefix matching)
+	s.mux.HandleFunc("/api/v1/chat/stream/", cors(s.handleStreamingChat))
+
 	// Chat
 	s.mux.HandleFunc("/api/v1/chat/", cors(s.handleChat))
 
@@ -117,6 +122,9 @@ func (s *Server) registerRoutes() {
 
 	// Panel (direct access, skip Jordan)
 	s.mux.HandleFunc("/api/v1/panel/ask", cors(s.handlePanelAsk))
+
+	// SSE streaming
+	s.mux.HandleFunc("/api/v1/stream/", cors(s.handleStream))
 }
 
 // Start starts the HTTP server.
@@ -152,7 +160,7 @@ func (s *Server) createSession(w http.ResponseWriter, r *http.Request) {
 		Domain string `json:"domain"`
 	}
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		req.Domain = "cto-advisory"
+		req.Domain = "cio"
 	}
 
 	// Load CRF context
@@ -527,11 +535,63 @@ func (s *Server) handlePanelAsk(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// This would integrate with the modes package
-	// For now, return a placeholder response
+	// Load CRF context
+	crfCtx, _ := s.store.LoadContext()
+
+	// Resolve advisors
+	selectedAdvisors := advisors.CoreAdvisors()
+	if len(req.Advisors) > 0 {
+		ids := make([]types.AdvisorID, len(req.Advisors))
+		for i, a := range req.Advisors {
+			ids[i] = types.AdvisorID(a)
+		}
+		if resolved := advisors.GetByIDs(ids); len(resolved) > 0 {
+			selectedAdvisors = resolved
+		}
+	}
+
+	// Select mode
+	mode := req.Mode
+	if mode == "" {
+		mode = "panel"
+	}
+
+	ctx, cancel := context.WithTimeout(r.Context(), 60*time.Second)
+	defer cancel()
+
+	var result types.ParsedResponse
+	var err error
+	switch types.Mode(mode) {
+	case types.ModeSocratic:
+		result, err = modes.Socratic(ctx, s.client, req.Question, selectedAdvisors, crfCtx)
+	case types.ModeAdvocate:
+		result, err = modes.Advocate(ctx, s.client, req.Question, selectedAdvisors, crfCtx)
+	case types.ModeFramework:
+		result, err = modes.Framework(ctx, s.client, req.Question, selectedAdvisors, crfCtx)
+	default:
+		result, err = modes.Panel(ctx, s.client, req.Question, selectedAdvisors, crfCtx)
+	}
+
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Panel query error: %v", err), http.StatusInternalServerError)
+		return
+	}
+
+	// Build advisor responses for JSON
+	advisorResponses := make([]map[string]string, 0, len(result.Advisors))
+	for _, ar := range result.Advisors {
+		advisorResponses = append(advisorResponses, map[string]string{
+			"advisor_id": string(ar.AdvisorID),
+			"name":       ar.Name,
+			"role":       ar.Role,
+			"response":   ar.Response,
+		})
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]interface{}{
-		"status":  "panel_direct_not_implemented",
-		"message": "Use the chat endpoint with a session for full functionality",
+		"mode":      mode,
+		"advisors":  advisorResponses,
+		"synthesis": result.Synthesis,
 	})
 }

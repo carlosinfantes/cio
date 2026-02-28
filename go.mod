@@ -1,4 +1,4 @@
-module github.com/carlosinfantes/cto-advisory-board
+module github.com/carlosinfantes/cio
 
 go 1.25.5
 

@@ -10,12 +10,12 @@ import (
 
 	"gopkg.in/yaml.v3"
 
-	"github.com/carlosinfantes/cto-advisory-board/internal/types"
+	"github.com/carlosinfantes/cio/internal/types"
 )
 
 // Manifest defines the structure of a domain plugin.
 type Manifest struct {
-	// Domain identifier (e.g., "cto-advisory", "legal-advisory")
+	// Domain identifier (e.g., "cio", "legal-advisory")
 	Domain string `yaml:"domain" json:"domain"`
 
 	// Version following semver

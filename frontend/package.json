@@ -1,7 +1,7 @@
 {
-  "name": "cto-advisory-frontend",
+  "name": "cio-frontend",
   "version": "1.0.0",
-  "description": "React frontend for CTO Advisory Board",
+  "description": "React frontend for CIO - Chief Intelligence Officer",
   "private": true,
   "type": "module",
   "scripts": {

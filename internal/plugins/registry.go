@@ -6,9 +6,10 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"strings"
 	"sync"
 
-	"github.com/carlosinfantes/cto-advisory-board/internal/types"
+	"github.com/carlosinfantes/cio/internal/types"
 )
 
 // BundledPluginsDir is the directory name for bundled plugins relative to the binary.
@@ -32,7 +33,7 @@ type Plugin struct {
 func NewRegistry() *Registry {
 	return &Registry{
 		plugins: make(map[string]*Plugin),
-		active:  "cto-advisory", // Default domain
+		active:  "cio", // Default domain
 	}
 }
 
@@ -213,9 +214,26 @@ func matchKeywords(text string, keywords []string) []string {
 }
 
 func containsWord(text, word string) bool {
-	// Simple case-insensitive contains
-	// Could be improved with word boundary detection
-	return len(text) > 0 && len(word) > 0
+	// Case-insensitive substring search
+	if len(text) == 0 || len(word) == 0 {
+		return false
+	}
+	textLower := toLower(text)
+	wordLower := toLower(word)
+	return strings.Contains(textLower, wordLower)
+}
+
+func toLower(s string) string {
+	result := make([]byte, len(s))
+	for i := 0; i < len(s); i++ {
+		c := s[i]
+		if c >= 'A' && c <= 'Z' {
+			result[i] = c + 32
+		} else {
+			result[i] = c
+		}
+	}
+	return string(result)
 }
 
 // GetBundledPluginsDir returns the path to the bundled plugins directory.
@@ -269,14 +287,14 @@ func (r *Registry) LoadBundledPlugins() error {
 	return r.LoadPluginsFromDir(bundledDir)
 }
 
-// DefaultCTOPlugin returns the default CTO advisory plugin manifest.
-// Deprecated: Use LoadBundledPlugins() to load from plugins/cto-advisory/ instead.
-func DefaultCTOPlugin() *Manifest {
+// DefaultCIOPlugin returns the default CIO plugin manifest.
+// Deprecated: Use LoadBundledPlugins() to load from plugins/cio/ instead.
+func DefaultCIOPlugin() *Manifest {
 	return &Manifest{
-		Domain:      "cto-advisory",
+		Domain:      "cio",
 		Version:     "1.0.0",
-		DisplayName: "CTO Advisory Board",
-		Description: "AI-powered executive committee for CTOs making technical decisions",
+		DisplayName: "CIO - Chief Intelligence Officer",
+		Description: "AI-powered executive committee for intelligent decision-making",
 		Facilitator: FacilitatorConfig{
 			ID:            "facilitator",
 			Name:          "Jordan",
@@ -380,7 +398,7 @@ func GetRegistry() *Registry {
 		}
 		// If no plugins loaded, fall back to hardcoded default
 		if len(globalRegistry.plugins) == 0 {
-			manifest := DefaultCTOPlugin()
+			manifest := DefaultCIOPlugin()
 			globalRegistry.RegisterPlugin(manifest.Domain, &Plugin{
 				Manifest: manifest,
 				Personas: manifest.ToPersonas(),

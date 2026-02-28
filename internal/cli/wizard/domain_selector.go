@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/carlosinfantes/cto-advisory-board/internal/config"
-	"github.com/carlosinfantes/cto-advisory-board/internal/plugins"
+	"github.com/carlosinfantes/cio/internal/config"
+	"github.com/carlosinfantes/cio/internal/plugins"
 )
 
 // DomainInfo contains information about an available domain.

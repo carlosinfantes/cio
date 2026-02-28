@@ -1,6 +1,9 @@
 # Binary
-cto-advisory
-cto-advisory.exe
+cio
+cio.exe
+
+# AI assistant context
+CLAUDE.md
 
 # Build output
 dist/
@@ -16,10 +19,13 @@ dist/
 Thumbs.db
 
 # Local config (contains API key)
-.cto-advisory/
+.cio/
 
 # Development sandbox
-sandbox/.cto-advisory/
+sandbox/.cio/
+
+# Legacy directory
+.cto-advisory/
 
 # Test coverage
 coverage.out

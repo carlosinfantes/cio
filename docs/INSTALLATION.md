@@ -3,7 +3,7 @@
 ## Requirements
 
 - **Go 1.22+** (for building from source)
-- **Node.js 18+** (for frontend development)
+- **Node.js 18+** (for frontend development, optional)
 - **OpenRouter API key** or compatible LLM API
 
 ## Installation Methods
@@ -11,53 +11,48 @@
 ### Method 1: From Source (Recommended)
 
 ```bash
-# Clone the repository
-git clone https://github.com/carlosinfantes/cto-advisory-board.git
-cd cto-advisory-board
-
-# Build the binary
+git clone https://github.com/carlosinfantes/cio.git
+cd cio
 make build
-
-# Optional: Install globally
-sudo mv cto-advisory /usr/local/bin/cto
+sudo mv cio /usr/local/bin/cio
 ```
 
 ### Method 2: Binary Releases
 
-Download pre-built binaries from [GitHub Releases](https://github.com/carlosinfantes/cto-advisory-board/releases).
-
-**macOS (Intel)**
-```bash
-curl -LO https://github.com/carlosinfantes/cto-advisory-board/releases/latest/download/cto-advisory-darwin-amd64
-chmod +x cto-advisory-darwin-amd64
-sudo mv cto-advisory-darwin-amd64 /usr/local/bin/cto
-```
+Download pre-built binaries from [GitHub Releases](https://github.com/carlosinfantes/cio/releases).
 
 **macOS (Apple Silicon)**
 ```bash
-curl -LO https://github.com/carlosinfantes/cto-advisory-board/releases/latest/download/cto-advisory-darwin-arm64
-chmod +x cto-advisory-darwin-arm64
-sudo mv cto-advisory-darwin-arm64 /usr/local/bin/cto
+curl -LO https://github.com/carlosinfantes/cio/releases/latest/download/cio-darwin-arm64
+chmod +x cio-darwin-arm64
+sudo mv cio-darwin-arm64 /usr/local/bin/cio
+```
+
+**macOS (Intel)**
+```bash
+curl -LO https://github.com/carlosinfantes/cio/releases/latest/download/cio-darwin-amd64
+chmod +x cio-darwin-amd64
+sudo mv cio-darwin-amd64 /usr/local/bin/cio
 ```
 
 **Linux (x86_64)**
 ```bash
-curl -LO https://github.com/carlosinfantes/cto-advisory-board/releases/latest/download/cto-advisory-linux-amd64
-chmod +x cto-advisory-linux-amd64
-sudo mv cto-advisory-linux-amd64 /usr/local/bin/cto
+curl -LO https://github.com/carlosinfantes/cio/releases/latest/download/cio-linux-amd64
+chmod +x cio-linux-amd64
+sudo mv cio-linux-amd64 /usr/local/bin/cio
 ```
 
 ### Method 3: Go Install
 
 ```bash
-go install github.com/carlosinfantes/cto-advisory-board/cmd/cto-advisory@latest
+go install github.com/carlosinfantes/cio/cmd/cio@latest
 ```
 
 ## Verify Installation
 
 ```bash
-cto --version
-# Output: cto-advisory version X.X.X
+cio version
+# Output: cio version 1.0.0
 ```
 
 ## Initial Setup
@@ -65,10 +60,10 @@ cto --version
 ### 1. Run the Setup Wizard
 
 ```bash
-cto init
+cio init
 ```
 
-This wizard will:
+The wizard will:
 1. Configure your API key
 2. Set up company context
 3. Define team structure
@@ -77,63 +72,61 @@ This wizard will:
 
 ### 2. Directory Structure Created
 
-After initialization, you'll have:
-
 ```
-.cto-advisory/
+.cio/
 ├── config.yaml              # API key and preferences
-└── context/
-    ├── organization.yaml    # Company info
-    ├── teams.yaml           # Team structure
-    ├── systems.yaml         # Tech stack
-    └── facts.yaml           # Constraints
+├── context/
+│   ├── organization.yaml    # Company info
+│   ├── teams.yaml           # Team structure
+│   ├── systems.yaml         # Tech stack
+│   └── facts.yaml           # Constraints
+├── decisions/               # Decision history
+└── plugins/
+    ├── installed/           # Registry plugins
+    └── custom/              # Your custom plugins
+```
+
+### 3. Install a Plugin
+
+```bash
+# Browse available plugins
+cio plugin search
+
+# Install one
+cio plugin install startup-advisory
+
+# Activate it
+cio plugin use startup-advisory
 ```
 
 ## Frontend Setup (Optional)
 
-If you want to use the React frontend:
-
 ```bash
-# Navigate to frontend directory
 cd frontend
-
-# Install dependencies
 npm install
-
-# Start development server
 npm run dev
 ```
 
 The frontend will be available at `http://localhost:5173`.
 
-To connect to the backend API, start the server:
-
+Start the backend API:
 ```bash
-cto serve --port 8765
-```
-
-## Docker Installation (Coming Soon)
-
-```bash
-docker pull carlosinfantes/cto-advisory-board
-docker run -p 8765:8765 -v ~/.cto-advisory:/root/.cto-advisory carlosinfantes/cto-advisory-board
+cio serve --port 8765
 ```
 
 ## Troubleshooting
 
-### "command not found: cto"
+### "command not found: cio"
 
 Ensure the binary is in your PATH:
 ```bash
-# Add to your shell profile (~/.bashrc, ~/.zshrc, etc.)
 export PATH=$PATH:/usr/local/bin
 ```
 
 ### "permission denied"
 
-Make sure the binary is executable:
 ```bash
-chmod +x /usr/local/bin/cto
+chmod +x /usr/local/bin/cio
 ```
 
 ### Build errors
@@ -141,49 +134,45 @@ chmod +x /usr/local/bin/cto
 Ensure you have Go 1.22+:
 ```bash
 go version
-# Should output: go version go1.22.x or higher
 ```
 
 ### API connection errors
 
-1. Verify your API key is set:
+1. Verify your API key:
    ```bash
-   cto config get api-key
+   cio config get api-key
    ```
 
 2. Test the connection:
    ```bash
-   cto ask "Hello" --verbose
+   cio ask "Hello"
    ```
 
 ## Updating
 
 ### From Source
 ```bash
-cd cto-advisory-board
+cd cio
 git pull
 make build
-sudo mv cto-advisory /usr/local/bin/cto
+sudo mv cio /usr/local/bin/cio
 ```
 
-### Binary Releases
-Download the latest release and replace the existing binary.
+### Update Plugins
+```bash
+cio plugin update
+```
 
 ## Uninstalling
 
 ```bash
-# Remove binary
-sudo rm /usr/local/bin/cto
-
-# Remove configuration (optional)
-rm -rf ~/.cto-advisory
-
-# Remove project-specific configuration (optional)
-rm -rf .cto-advisory
+sudo rm /usr/local/bin/cio
+rm -rf ~/.cio      # User configuration (optional)
+rm -rf .cio        # Project configuration (optional)
 ```
 
 ## Next Steps
 
-- [Configuration Guide](CONFIGURATION.md) - Customize your setup
-- [Usage Guide](USAGE.md) - Learn the CLI commands
-- [Architecture](ARCHITECTURE.md) - Understand the system
+- [Configuration Guide](CONFIGURATION.md) — Customize your setup
+- [Usage Guide](USAGE.md) — Learn the CLI commands
+- [Plugin Development](PLUGINS.md) — Create custom domains

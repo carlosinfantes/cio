@@ -3,7 +3,7 @@ package advisors
 import (
 	"testing"
 
-	"github.com/carlosinfantes/cto-advisory-board/internal/types"
+	"github.com/carlosinfantes/cio/internal/types"
 )
 
 func TestCoreAdvisors(t *testing.T) {

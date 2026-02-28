@@ -1,4 +1,4 @@
-// Package output handles terminal rendering for the CTO Advisory Board.
+// Package output handles terminal rendering for the CIO - Chief Intelligence Officer.
 package output
 
 import (
@@ -10,7 +10,7 @@ import (
 	"github.com/charmbracelet/lipgloss"
 	"golang.org/x/term"
 
-	"github.com/carlosinfantes/cto-advisory-board/internal/types"
+	"github.com/carlosinfantes/cio/internal/types"
 )
 
 // Colors for each advisor
@@ -365,7 +365,7 @@ func PrintBrief(brief *types.Brief) {
 
 // PrintDiscoveryWelcome displays the discovery mode welcome banner.
 func PrintDiscoveryWelcome() {
-	fmt.Println("CTO Advisory Board - Discovery Mode")
+	fmt.Println("CIO - Chief Intelligence Officer - Discovery Mode")
 	fmt.Println("Let's clarify your challenge before consulting the board.")
 	fmt.Println("Type /skip to jump to panel mode, or /help for commands.")
 	fmt.Println()
@@ -531,7 +531,7 @@ func PrintStalenessWarning(warning *types.StalenessWarning) {
 	fmt.Println()
 	fmt.Println(style.Render(fmt.Sprintf("⚠️  Context outdated: %s.md last updated %d days ago",
 		warning.OldestFile, warning.DaysSinceUpdate)))
-	fmt.Println(style.Render("   Consider running: cto-advisory context update"))
+	fmt.Println(style.Render("   Consider running: cio context update"))
 	fmt.Println()
 }
 

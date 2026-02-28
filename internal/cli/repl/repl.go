@@ -1,4 +1,4 @@
-// Package repl implements a readline-based REPL for the CTO Advisory Board.
+// Package repl implements a readline-based REPL for the CIO - Chief Intelligence Officer.
 package repl
 
 import (
@@ -12,15 +12,15 @@ import (
 
 	"github.com/chzyer/readline"
 
-	"github.com/carlosinfantes/cto-advisory-board/internal/cli/output"
-	"github.com/carlosinfantes/cto-advisory-board/internal/config"
-	advisorsPkg "github.com/carlosinfantes/cto-advisory-board/internal/core/advisors"
-	ctxLoader "github.com/carlosinfantes/cto-advisory-board/internal/core/context"
-	"github.com/carlosinfantes/cto-advisory-board/internal/core/decisions"
-	"github.com/carlosinfantes/cto-advisory-board/internal/core/discovery"
-	"github.com/carlosinfantes/cto-advisory-board/internal/core/llm"
-	"github.com/carlosinfantes/cto-advisory-board/internal/core/modes"
-	"github.com/carlosinfantes/cto-advisory-board/internal/types"
+	"github.com/carlosinfantes/cio/internal/cli/output"
+	"github.com/carlosinfantes/cio/internal/config"
+	advisorsPkg "github.com/carlosinfantes/cio/internal/core/advisors"
+	ctxLoader "github.com/carlosinfantes/cio/internal/core/context"
+	"github.com/carlosinfantes/cio/internal/core/decisions"
+	"github.com/carlosinfantes/cio/internal/core/discovery"
+	"github.com/carlosinfantes/cio/internal/core/llm"
+	"github.com/carlosinfantes/cio/internal/core/modes"
+	"github.com/carlosinfantes/cio/internal/types"
 )
 
 // Session maintains state for an interactive session.
@@ -194,7 +194,7 @@ func New() (*REPL, error) {
 
 	// History file
 	homeDir, _ := os.UserHomeDir()
-	historyFile := filepath.Join(homeDir, ".cto-advisory", "history")
+	historyFile := filepath.Join(homeDir, ".cio", "history")
 
 	// Ensure directory exists
 	os.MkdirAll(filepath.Dir(historyFile), 0755)
@@ -218,7 +218,7 @@ func New() (*REPL, error) {
 
 	if cfg.APIKey == "" {
 		rl.Close()
-		return nil, fmt.Errorf("no API key configured. Run: cto-advisory init")
+		return nil, fmt.Errorf("no API key configured. Run: cio init")
 	}
 
 	// Initialize LLM client

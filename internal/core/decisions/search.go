@@ -6,7 +6,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/carlosinfantes/cto-advisory-board/internal/types"
+	"github.com/carlosinfantes/cio/internal/types"
 )
 
 // SearchResult represents a search match with relevance score.

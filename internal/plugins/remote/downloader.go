@@ -3,7 +3,10 @@ package remote
 
 import (
 	"archive/tar"
+	"bytes"
 	"compress/gzip"
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
 	"io"
 	"net/http"
@@ -51,24 +54,34 @@ func (d *Downloader) Download(domain string, destDir string) error {
 		return fmt.Errorf("download failed with status %d", resp.StatusCode)
 	}
 
+	// Read the full body for checksum verification
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return fmt.Errorf("reading download: %w", err)
+	}
+
+	// Verify checksum if provided
+	if plugin.Checksum != "" {
+		hash := sha256.Sum256(body)
+		got := hex.EncodeToString(hash[:])
+		if got != plugin.Checksum {
+			os.RemoveAll(pluginDir)
+			return fmt.Errorf("checksum mismatch: expected %s, got %s", plugin.Checksum, got)
+		}
+	}
+
 	// Determine archive type and extract
+	bodyReader := bytes.NewReader(body)
 	if strings.HasSuffix(plugin.DownloadURL, ".tar.gz") || strings.HasSuffix(plugin.DownloadURL, ".tgz") {
-		if err := extractTarGz(resp.Body, pluginDir); err != nil {
+		if err := extractTarGz(bodyReader, pluginDir); err != nil {
 			return fmt.Errorf("extracting archive: %w", err)
 		}
 	} else if strings.HasSuffix(plugin.DownloadURL, ".zip") {
-		// For zip files, we'd need to save to temp file first
 		return fmt.Errorf("zip archives not yet supported")
 	} else {
 		// Assume it's a single manifest.yaml file
 		manifestPath := filepath.Join(pluginDir, "manifest.yaml")
-		outFile, err := os.Create(manifestPath)
-		if err != nil {
-			return fmt.Errorf("creating manifest file: %w", err)
-		}
-		defer outFile.Close()
-
-		if _, err := io.Copy(outFile, resp.Body); err != nil {
+		if err := os.WriteFile(manifestPath, body, 0644); err != nil {
 			return fmt.Errorf("saving manifest: %w", err)
 		}
 	}
@@ -105,7 +118,8 @@ func extractTarGz(reader io.Reader, destDir string) error {
 
 		// Sanitize the path to prevent path traversal
 		target := filepath.Join(destDir, header.Name)
-		if !strings.HasPrefix(target, filepath.Clean(destDir)+string(os.PathSeparator)) {
+		cleanDest := filepath.Clean(destDir)
+		if target != cleanDest && !strings.HasPrefix(target, cleanDest+string(os.PathSeparator)) {
 			return fmt.Errorf("invalid file path: %s", header.Name)
 		}
 

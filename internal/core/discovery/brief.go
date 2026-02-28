@@ -7,9 +7,9 @@ import (
 
 	"gopkg.in/yaml.v3"
 
-	"github.com/carlosinfantes/cto-advisory-board/internal/core/advisors"
-	"github.com/carlosinfantes/cto-advisory-board/internal/core/llm"
-	"github.com/carlosinfantes/cto-advisory-board/internal/types"
+	"github.com/carlosinfantes/cio/internal/core/advisors"
+	"github.com/carlosinfantes/cio/internal/core/llm"
+	"github.com/carlosinfantes/cio/internal/types"
 )
 
 // GenerateBrief creates a structured brief from a discovery conversation.

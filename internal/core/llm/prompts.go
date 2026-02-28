@@ -1,11 +1,11 @@
-// Package llm provides prompt building for the CTO Advisory Board.
+// Package llm provides prompt building for the CIO - Chief Intelligence Officer.
 package llm
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/carlosinfantes/cto-advisory-board/internal/types"
+	"github.com/carlosinfantes/cio/internal/types"
 )
 
 // BuildSystemPrompt creates the system prompt for the advisory board.
@@ -13,7 +13,7 @@ func BuildSystemPrompt(advisors []types.Persona, context *types.CRFContext, mode
 	var sb strings.Builder
 
 	// Base instructions
-	sb.WriteString(`You are simulating a CTO Advisory Board meeting. You will embody multiple expert advisors, each with distinct personalities and expertise.
+	sb.WriteString(`You are simulating a CIO - Chief Intelligence Officer meeting. You will embody multiple expert advisors, each with distinct personalities and expertise.
 
 CRITICAL INSTRUCTIONS:
 1. Respond AS each advisor in turn, using their voice and perspective

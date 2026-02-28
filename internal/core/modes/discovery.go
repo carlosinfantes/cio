@@ -4,9 +4,9 @@ package modes
 import (
 	"context"
 
-	"github.com/carlosinfantes/cto-advisory-board/internal/core/advisors"
-	"github.com/carlosinfantes/cto-advisory-board/internal/core/llm"
-	"github.com/carlosinfantes/cto-advisory-board/internal/types"
+	"github.com/carlosinfantes/cio/internal/core/advisors"
+	"github.com/carlosinfantes/cio/internal/core/llm"
+	"github.com/carlosinfantes/cio/internal/types"
 )
 
 // DiscoveryResponse represents the facilitator's response in discovery mode.

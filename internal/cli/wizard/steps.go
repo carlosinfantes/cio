@@ -9,8 +9,8 @@ import (
 
 	"gopkg.in/yaml.v3"
 
-	"github.com/carlosinfantes/cto-advisory-board/internal/config"
-	"github.com/carlosinfantes/cto-advisory-board/internal/types"
+	"github.com/carlosinfantes/cio/internal/config"
+	"github.com/carlosinfantes/cio/internal/types"
 )
 
 // stepAPIKey prompts for the OpenRouter API key.
@@ -50,7 +50,7 @@ func (w *Wizard) stepDomainSelection() error {
 
 	// For now, show available domains (will integrate with registry later)
 	domains := []string{
-		"cto-advisory - AI-powered executive committee for CTOs",
+		"cio - AI-powered executive committee for CTOs",
 		"legal-advisory - Legal counsel for business decisions",
 		"medical-advisory - Healthcare practice advisory",
 		"custom - Create a custom domain",
@@ -63,7 +63,7 @@ func (w *Wizard) stepDomainSelection() error {
 
 	switch idx {
 	case 0:
-		w.config.ActiveDomain = "cto-advisory"
+		w.config.ActiveDomain = "cio"
 	case 1:
 		w.config.ActiveDomain = "legal-advisory"
 	case 2:

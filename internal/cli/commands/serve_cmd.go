@@ -6,9 +6,9 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/carlosinfantes/cto-advisory-board/internal/api"
-	"github.com/carlosinfantes/cto-advisory-board/internal/cli/output"
-	"github.com/carlosinfantes/cto-advisory-board/internal/config"
+	"github.com/carlosinfantes/cio/internal/api"
+	"github.com/carlosinfantes/cio/internal/cli/output"
+	"github.com/carlosinfantes/cio/internal/config"
 )
 
 var (
@@ -22,12 +22,12 @@ var serveCmd = &cobra.Command{
 	Long: `Start the HTTP API server for frontend integration.
 
 This enables building React, Vue, or other frontend applications
-that communicate with the CTO Advisory Board engine.
+that communicate with the CIO - Chief Intelligence Officer engine.
 
 Example:
-  cto-advisory serve
-  cto-advisory serve --port 8080
-  cto-advisory serve --addr 0.0.0.0:8080
+  cio serve
+  cio serve --port 8080
+  cio serve --addr 0.0.0.0:8080
 
 API Endpoints:
   POST /api/v1/session           Create a new chat session
@@ -65,7 +65,7 @@ func runServe(cmd *cobra.Command, args []string) error {
 	}
 
 	if cfg.APIKey == "" {
-		output.PrintError("No API key configured. Run: cto-advisory init")
+		output.PrintError("No API key configured. Run: cio init")
 		return fmt.Errorf("no API key")
 	}
 
@@ -84,7 +84,7 @@ func runServe(cmd *cobra.Command, args []string) error {
 
 	fmt.Println()
 	fmt.Println("┌──────────────────────────────────────────────────────────┐")
-	fmt.Println("│  💭 CTO Advisory Board API Server                        │")
+	fmt.Println("│  💭 CIO - Chief Intelligence Officer API Server                        │")
 	fmt.Println("├──────────────────────────────────────────────────────────┤")
 	fmt.Printf("│  Listening on: http://localhost%s                   │\n", addr)
 	fmt.Println("│                                                          │")

@@ -1,4 +1,4 @@
-// Package commands implements the config command for the CTO Advisory Board.
+// Package commands implements the config command for the CIO - Chief Intelligence Officer.
 package commands
 
 import (
@@ -11,10 +11,10 @@ import (
 	"github.com/charmbracelet/lipgloss"
 	"github.com/spf13/cobra"
 
-	"github.com/carlosinfantes/cto-advisory-board/internal/cli/output"
-	"github.com/carlosinfantes/cto-advisory-board/internal/config"
-	"github.com/carlosinfantes/cto-advisory-board/internal/core/llm"
-	"github.com/carlosinfantes/cto-advisory-board/internal/types"
+	"github.com/carlosinfantes/cio/internal/cli/output"
+	"github.com/carlosinfantes/cio/internal/config"
+	"github.com/carlosinfantes/cio/internal/core/llm"
+	"github.com/carlosinfantes/cio/internal/types"
 )
 
 func init() {
@@ -25,7 +25,7 @@ func newConfigCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "config <action> [key] [value]",
 		Short: "Manage configuration",
-		Long: `Manage CTO Advisory Board configuration.
+		Long: `Manage CIO - Chief Intelligence Officer configuration.
 
 Actions:
   set <key> <value>  Set a configuration value
@@ -57,14 +57,14 @@ func runConfig(cmd *cobra.Command, args []string) error {
 		return handleConfigList()
 	default:
 		output.PrintError(fmt.Sprintf("Unknown action: %s", action))
-		fmt.Println("Usage: cto-advisory config <set|get|list> [key] [value]")
+		fmt.Println("Usage: cio config <set|get|list> [key] [value]")
 		return nil
 	}
 }
 
 func handleConfigSet(args []string) error {
 	if len(args) < 2 {
-		output.PrintError("Usage: cto-advisory config set <key> <value>")
+		output.PrintError("Usage: cio config set <key> <value>")
 		fmt.Println("\nAvailable keys:")
 		fmt.Println("  api-key          Your OpenRouter API key")
 		fmt.Println("  model            Model to use")
@@ -172,7 +172,7 @@ func handleConfigSet(args []string) error {
 
 func handleConfigGet(args []string) error {
 	if len(args) < 1 {
-		output.PrintError("Usage: cto-advisory config get <key>")
+		output.PrintError("Usage: cio config get <key>")
 		return nil
 	}
 
@@ -221,11 +221,11 @@ func handleConfigList() error {
 	dimStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("240"))
 
 	fmt.Println()
-	fmt.Println(titleStyle.Render("CTO Advisory Board Configuration"))
+	fmt.Println(titleStyle.Render("CIO - Chief Intelligence Officer Configuration"))
 	fmt.Println()
 
 	if !config.IsInitialized() {
-		fmt.Println(dimStyle.Render("⚠ Project not initialized. Run: cto-advisory init"))
+		fmt.Println(dimStyle.Render("⚠ Project not initialized. Run: cio init"))
 		fmt.Println()
 	}
 

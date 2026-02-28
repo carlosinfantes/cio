@@ -6,8 +6,8 @@ import (
 	"encoding/json"
 	"strings"
 
-	"github.com/carlosinfantes/cto-advisory-board/internal/core/llm"
-	"github.com/carlosinfantes/cto-advisory-board/internal/types"
+	"github.com/carlosinfantes/cio/internal/core/llm"
+	"github.com/carlosinfantes/cio/internal/types"
 )
 
 // Analyzer evaluates user messages and updates facilitation state.

@@ -2,7 +2,7 @@
 package context
 
 import (
-	"github.com/carlosinfantes/cto-advisory-board/internal/types"
+	"github.com/carlosinfantes/cio/internal/types"
 )
 
 // DefaultStalenessThreshold is the number of days before context is considered stale.

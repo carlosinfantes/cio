@@ -1,90 +1,71 @@
-# CTO Advisory Board - Architecture
+# CIO - Architecture
 
 ## Overview
 
-The CTO Advisory Board is a dual-interface system providing AI-powered advisory consultations:
-- **CLI** - Command-line interface for human interaction
-- **API** - HTTP endpoints for frontend/programmatic integration
+CIO is a dual-interface system providing AI-powered advisory consultations:
+- **CLI** — Command-line interface for human interaction
+- **API** — HTTP endpoints with SSE streaming for frontend integration
 
 ## System Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                       USER INTERFACES                                │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                      │
-│   CLI (Human)                         API (Frontend)                 │
-│   ─────────────                       ──────────────                 │
-│   $ cto                               POST /api/v1/session           │
-│   $ cto ask "Q" --json                POST /api/v1/chat/{id}/message │
-│   $ cto serve                         GET  /api/v1/stream/{id}       │
-│                                                                      │
-└──────────────────────────────┬──────────────────────────────────────┘
-                               │
-                               ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                    FACILITATION LAYER                                │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                      │
-│   Jordan (Facilitator)                                               │
-│   ────────────────────                                               │
-│   internal/core/facilitation/                                        │
-│                                                                      │
-│   State Machine:                                                     │
-│   ┌──────┐    ┌─────────┐    ┌─────────┐    ┌──────────┐    ┌─────┐│
-│   │ init │ -> │ context │ -> │ problem │ -> │ discovery│ -> │panel││
-│   └──────┘    └─────────┘    └─────────┘    └──────────┘    └─────┘│
-│                                                                      │
-│   Auto-escalation when: context + problem + discovery = complete    │
-│                                                                      │
-└──────────────────────────────┬──────────────────────────────────────┘
-                               │
-                               ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                      PLUGIN SYSTEM                                   │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                      │
-│   internal/plugins/                                                  │
-│                                                                      │
-│   plugins/                                                           │
-│   ├── cto-advisory/           # Default: Tech decisions             │
-│   │   └── manifest.yaml                                              │
-│   │                                                                  │
-│   ├── legal-advisory/         # Example: Legal decisions            │
-│   │   └── manifest.yaml                                              │
-│   │                                                                  │
-│   └── [your-domain]/          # Custom domains                       │
-│       └── manifest.yaml                                              │
-│                                                                      │
-│   Each plugin defines:                                               │
-│   - Facilitator persona (Jordan equivalent)                          │
-│   - Core advisors (always available)                                 │
-│   - Specialists (auto-summoned by keywords)                          │
-│   - Context entity types (domain-specific CRF)                       │
-│                                                                      │
-└──────────────────────────────┬──────────────────────────────────────┘
-                               │
-                               ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                      STORAGE LAYER                                   │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                      │
-│   internal/storage/                                                  │
-│                                                                      │
-│   Storage Interface                                                  │
-│   ─────────────────                                                  │
-│   - LoadContext() / SaveEntity()       # CRF operations             │
-│   - SaveDecision() / GetDecision()     # DRF operations             │
-│   - SaveDiscoverySession()             # Session persistence         │
-│   - LoadConfig() / SaveConfig()        # Configuration               │
-│                                                                      │
-│   Implementations:                                                   │
-│   ┌────────────────┐  ┌────────────────┐  ┌────────────────┐        │
-│   │  FileStorage   │  │  SQLiteStorage │  │   APIStorage   │        │
-│   │   (current)    │  │    (future)    │  │    (future)    │        │
-│   └────────────────┘  └────────────────┘  └────────────────┘        │
-│                                                                      │
-└─────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────┐
+│                    USER INTERFACES                      │
+├─────────────────────────────────────────────────────────┤
+│   CLI (Human)                    API (Frontend)         │
+│   $ cio                         POST /api/v1/session    │
+│   $ cio ask "Q" --json          POST /api/v1/chat/      │
+│   $ cio serve                   GET  /api/v1/stream/    │
+└───────────────────────┬─────────────────────────────────┘
+                        │
+                        ▼
+┌─────────────────────────────────────────────────────────┐
+│                 FACILITATION LAYER                       │
+├─────────────────────────────────────────────────────────┤
+│   Jordan (Facilitator)                                  │
+│   internal/core/facilitation/                           │
+│                                                         │
+│   State Machine:                                        │
+│   init → context → problem → discovery → panel          │
+│                                                         │
+│   Auto-escalation when:                                 │
+│   context + problem + discovery = complete              │
+└───────────────────────┬─────────────────────────────────┘
+                        │
+                        ▼
+┌─────────────────────────────────────────────────────────┐
+│                   PLUGIN SYSTEM                         │
+├─────────────────────────────────────────────────────────┤
+│   internal/plugins/                                     │
+│   internal/plugins/remote/  (registry client)           │
+│                                                         │
+│   Plugin sources:                                       │
+│   ├── Registry    (cio plugin install <domain>)         │
+│   ├── Local       (~/.cio/plugins/installed/)           │
+│   └── Custom      (~/.cio/plugins/custom/)              │
+│                                                         │
+│   Each plugin defines:                                  │
+│   - Facilitator persona                                 │
+│   - Core advisors (always available)                    │
+│   - Specialists (auto-summoned by keywords)             │
+│   - Context entity types (domain-specific CRF)          │
+└───────────────────────┬─────────────────────────────────┘
+                        │
+                        ▼
+┌─────────────────────────────────────────────────────────┐
+│                    STORAGE LAYER                        │
+├─────────────────────────────────────────────────────────┤
+│   internal/storage/                                     │
+│                                                         │
+│   Storage Interface                                     │
+│   - LoadContext() / SaveEntity()       # CRF            │
+│   - SaveDecision() / GetDecision()     # DRF            │
+│   - SaveDiscoverySession()             # Sessions       │
+│   - LoadConfig() / SaveConfig()        # Configuration  │
+│                                                         │
+│   Implementation: FileStorage (file-based, goroutine-   │
+│   safe singleton via sync.Once)                         │
+└─────────────────────────────────────────────────────────┘
 ```
 
 ## Component Details
@@ -93,18 +74,16 @@ The CTO Advisory Board is a dual-interface system providing AI-powered advisory 
 
 **Location**: `internal/core/facilitation/`
 
-Jordan's facilitation follows a state machine:
-
 ```go
 type FacilitationPhase string
 
 const (
-    PhaseInit              FacilitationPhase = "init"
-    PhaseContextGathering  FacilitationPhase = "context_gathering"
+    PhaseInit                FacilitationPhase = "init"
+    PhaseContextGathering    FacilitationPhase = "context_gathering"
     PhaseProblemArticulation FacilitationPhase = "problem_articulation"
-    PhaseDiscovery         FacilitationPhase = "discovery"
-    PhaseReadyForEscalation FacilitationPhase = "ready_for_escalation"
-    PhaseEscalated         FacilitationPhase = "escalated"
+    PhaseDiscovery           FacilitationPhase = "discovery"
+    PhaseReadyForEscalation  FacilitationPhase = "ready_for_escalation"
+    PhaseEscalated           FacilitationPhase = "escalated"
 )
 ```
 
@@ -119,15 +98,10 @@ const (
 
 ```go
 type Storage interface {
-    // Context (CRF)
     LoadContext() (*types.CRFContext, error)
     SaveEntity(entity *types.CRFDocument) error
-
-    // Decisions (DRF)
     SaveDecision(doc *types.DRFDocument) error
     GetDecision(id string) (*types.DRFDocument, error)
-
-    // Sessions
     SaveDiscoverySession(session *types.DiscoverySession, name string) (string, error)
     LoadDiscoverySession(id string) (*types.DiscoverySession, error)
 }
@@ -135,7 +109,7 @@ type Storage interface {
 
 ### 3. Plugin System
 
-**Location**: `internal/plugins/`
+**Location**: `internal/plugins/`, `internal/plugins/remote/`
 
 Plugin manifest schema:
 
@@ -143,6 +117,7 @@ Plugin manifest schema:
 domain: legal-advisory
 version: "1.0.0"
 display_name: "Legal Advisory Board"
+emoji: "⚖️"
 
 facilitator:
   id: "alex"
@@ -159,26 +134,30 @@ specialists:
   - id: "ip-counsel"
     name: "Jennifer Wu"
     keywords: [patent, trademark, copyright]
+```
 
-context_entities:
-  - type: "client"
-  - type: "matter"
-  - type: "jurisdiction"
+Plugin management:
+```bash
+cio plugin search              # Browse registry (stars, downloads)
+cio plugin install <domain>    # Install from registry
+cio plugin use <domain>        # Activate a plugin
+cio plugin list                # List installed plugins
+cio plugin create <domain>     # Scaffold a custom plugin
+cio plugin update              # Update to latest versions
 ```
 
 ### 4. API Server
 
 **Location**: `internal/api/`
 
-Start with: `cto serve --port 8765`
-
-**Endpoints:**
+Start with: `cio serve --port 8765`
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | POST | `/api/v1/session` | Create chat session |
 | GET | `/api/v1/session/{id}` | Get session details |
 | POST | `/api/v1/chat/{id}/message` | Send message to Jordan |
+| POST | `/api/v1/chat/stream/{id}` | Send message with SSE response |
 | GET | `/api/v1/stream/{id}` | SSE streaming connection |
 | GET | `/api/v1/context` | Get CRF entities |
 | GET | `/api/v1/decisions` | List DRF decisions |
@@ -189,20 +168,11 @@ Start with: `cto serve --port 8765`
 **Location**: `frontend/`
 
 ```bash
-cd frontend
-npm install
-npm run dev
+cd frontend && npm install && npm run dev
 ```
 
-**Components:**
-- `ChatPanel` - Main chat interface
-- `ChatMessage` - Individual message display
-- `ChatInput` - Message input with send
-- `PhaseIndicator` - Facilitation progress
-
-**Hooks:**
-- `useChat` - Chat session management
-- `useStream` - SSE streaming support
+**Components:** `ChatPanel`, `ChatMessage`, `ChatInput`, `PhaseIndicator`
+**Hooks:** `useChat` (session management), `useStream` (SSE streaming)
 
 ## Data Flow
 
@@ -221,81 +191,72 @@ User Input
 │   (facilitation)  │
 └─────────┬─────────┘
           │
-          ├──────────────────────────────┐
-          │                              │
-          ▼                              ▼
-┌───────────────────┐        ┌───────────────────┐
-│  Update State     │        │  Generate Response│
-│  (FacilitationState)       │  (Jordan/LLM)     │
-└─────────┬─────────┘        └─────────┬─────────┘
-          │                              │
-          ▼                              │
-┌───────────────────┐                    │
-│  Check Escalation │                    │
-│  (auto-escalate?) │                    │
-└─────────┬─────────┘                    │
-          │                              │
-          ├── Yes ───────────┐           │
-          │                  │           │
-          ▼                  ▼           │
-┌───────────────────┐  ┌───────────────────┐
-│  Continue Discovery│  │  Escalate to Panel│
-│  (return response) │  │  (generate brief) │
-└───────────────────┘  └───────────────────┘
+          ├───────────────────────┐
+          ▼                       ▼
+┌───────────────────┐   ┌───────────────────┐
+│  Update State     │   │  Generate Response│
+│  (FacilState)     │   │  (Jordan/LLM)     │
+└─────────┬─────────┘   └─────────┬─────────┘
+          │                       │
+          ▼                       │
+┌───────────────────┐             │
+│  Check Escalation │             │
+└─────────┬─────────┘             │
+          │                       │
+          ├── Yes ──┐             │
+          ▼         ▼             │
+┌──────────────┐ ┌────────────────┐
+│  Continue    │ │  Escalate to   │
+│  Discovery   │ │  Panel         │
+└──────────────┘ └────────────────┘
 ```
 
 ## File Structure
 
 ```
-ctoadvisoryboard/
-├── cmd/cto-advisory/
-│   └── main.go
+cio/
+├── cmd/cio/main.go                  # Entry point, version injection
 ├── internal/
 │   ├── api/
-│   │   ├── server.go        # HTTP API server
-│   │   └── streaming.go     # SSE streaming
+│   │   ├── server.go                # HTTP API server, routes
+│   │   └── streaming.go             # SSE streaming
 │   ├── cli/
 │   │   ├── commands/
-│   │   │   └── serve_cmd.go # cto serve command
-│   │   ├── output/
-│   │   │   └── mode_selector.go
-│   │   └── repl/
-│   │       └── enhanced.go  # Enhanced REPL
+│   │   │   ├── root.go              # Root command, loadPlugin()
+│   │   │   ├── ask_cmd.go           # cio ask
+│   │   │   ├── plugin_cmd.go        # cio plugin (search/install/etc)
+│   │   │   ├── serve_cmd.go         # cio serve
+│   │   │   ├── init.go              # cio init wizard
+│   │   │   ├── config_cmd.go        # cio config
+│   │   │   ├── context_cmd.go       # cio context
+│   │   │   ├── history_cmd.go       # cio history
+│   │   │   └── session.go           # Session management
+│   │   ├── output/                  # Terminal formatting
+│   │   ├── repl/                    # Interactive REPL
+│   │   └── wizard/                  # Setup wizard
+│   ├── config/                      # Configuration loading
 │   ├── core/
-│   │   ├── facilitation/
-│   │   │   ├── state.go     # State machine
-│   │   │   ├── analyzer.go  # Message analysis
-│   │   │   └── coordinator.go
-│   │   └── advisors/        # Persona definitions
+│   │   ├── advisors/                # Persona definitions
+│   │   ├── context/                 # CRF loading/saving
+│   │   ├── decisions/               # DRF management
+│   │   ├── discovery/               # Discovery sessions
+│   │   ├── facilitation/            # State machine
+│   │   ├── llm/                     # LLM client & prompts
+│   │   └── modes/                   # Panel, socratic, etc.
 │   ├── plugins/
-│   │   ├── manifest.go      # Plugin schema
-│   │   └── registry.go      # Plugin loading
-│   └── storage/
-│       ├── storage.go       # Interface
-│       └── file_storage.go  # Implementation
-├── plugins/
-│   └── legal-advisory/
-│       └── manifest.yaml
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   ├── hooks/
-│   │   ├── api/
-│   │   └── types/
-│   └── package.json
-└── docs/
-    ├── ARCHITECTURE.md
-    ├── INSTALLATION.md
-    ├── CONFIGURATION.md
-    ├── USAGE.md
-    └── PLUGINS.md
+│   │   ├── loader.go                # Plugin loading
+│   │   ├── manifest.go              # YAML schema
+│   │   ├── registry.go              # Plugin registry
+│   │   └── remote/                  # Registry client, downloader
+│   ├── storage/                     # File-based storage
+│   └── types/                       # Shared types
+├── plugins/cio/                     # Built-in CIO plugin
+├── plugin-templates/                # Scaffolding templates
+├── frontend/                        # React + TypeScript frontend
+└── docs/                            # Documentation
 ```
 
 ## SSE Streaming Protocol
-
-The API uses Server-Sent Events for real-time communication:
-
-### Event Types
 
 | Event | Data | Description |
 |-------|------|-------------|
@@ -310,7 +271,6 @@ The API uses Server-Sent Events for real-time communication:
 ### Frontend Integration
 
 ```typescript
-// Connect to stream
 const eventSource = new EventSource(`${API_BASE}/api/v1/stream/${sessionId}`);
 
 eventSource.addEventListener('chunk', (event) => {
@@ -323,44 +283,3 @@ eventSource.addEventListener('complete', (event) => {
   // Handle completion
 });
 ```
-
-## Advisory Board Personas
-
-### Core Advisors
-
-| ID | Name | Role | Color | Focus |
-|----|------|------|-------|-------|
-| `cto` | Victoria Chen | Fractional CTO | Blue | Strategy, 10x outcomes |
-| `ciso` | Marcus Webb | Former CISO | Red | Security, risk |
-| `vp-eng` | Priya Sharma | VP Engineering | Yellow | Teams, delivery |
-| `architect` | Erik Lindqvist | Principal Architect | Cyan | Trade-offs, design |
-
-### Specialists (Auto-summoned)
-
-| ID | Name | Keywords |
-|----|------|----------|
-| `cfo` | David Park | budget, cost, ROI, pricing |
-| `product` | Sarah Mitchell | roadmap, feature, customers |
-| `devops` | Alex Petrov | deploy, kubernetes, AWS |
-
-## Environment Variables
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `VITE_API_URL` | `http://localhost:8765` | API server URL for frontend |
-
-## Future Roadmap
-
-### Storage Implementations
-- **SQLiteStorage** - Local database for improved querying
-- **APIStorage** - Remote storage for team collaboration
-
-### Plugin Enhancements
-- Hot-reload plugins without restart
-- Plugin marketplace
-- Remote plugin loading
-
-### Frontend Features
-- Decision history browser
-- Context editor
-- Panel visualization

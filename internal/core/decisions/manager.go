@@ -12,8 +12,8 @@ import (
 	"github.com/google/uuid"
 	"gopkg.in/yaml.v3"
 
-	"github.com/carlosinfantes/cto-advisory-board/internal/config"
-	"github.com/carlosinfantes/cto-advisory-board/internal/types"
+	"github.com/carlosinfantes/cio/internal/config"
+	"github.com/carlosinfantes/cio/internal/types"
 )
 
 // ListFilters defines filtering options for listing decisions.
@@ -101,7 +101,7 @@ func CreateDRFDocument(
 		Meta: types.DRFMeta{
 			CreatedAt: now,
 			Status:    types.DRFStatusDraft,
-			Source:    "cto-advisory-board",
+			Source:    "carlosinfantes/cio",
 			Tags:      []string{string(mode)},
 			Actors:    buildActors(advisors),
 		},

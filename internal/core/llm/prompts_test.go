@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/carlosinfantes/cto-advisory-board/internal/types"
+	"github.com/carlosinfantes/cio/internal/types"
 )
 
 // createTestCRFContext creates a CRFContext for testing

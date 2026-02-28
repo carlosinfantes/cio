@@ -1,4 +1,4 @@
-// Package llm provides the OpenRouter API client for the CTO Advisory Board.
+// Package llm provides the OpenRouter API client for the CIO - Chief Intelligence Officer.
 package llm
 
 import (
@@ -176,8 +176,8 @@ func (c *Client) doQuery(ctx context.Context, req Request, maxTokens int) (*Resp
 
 	httpReq.Header.Set("Content-Type", "application/json")
 	httpReq.Header.Set("Authorization", "Bearer "+c.apiKey)
-	httpReq.Header.Set("HTTP-Referer", "https://github.com/carlosinfantes/cto-advisory-board")
-	httpReq.Header.Set("X-Title", "CTO Advisory Board")
+	httpReq.Header.Set("HTTP-Referer", "https://github.com/carlosinfantes/cio")
+	httpReq.Header.Set("X-Title", "CIO - Chief Intelligence Officer")
 
 	// Execute request
 	resp, err := c.httpClient.Do(httpReq)
@@ -248,8 +248,8 @@ func (c *Client) ValidateAPIKey(ctx context.Context) error {
 
 	httpReq.Header.Set("Content-Type", "application/json")
 	httpReq.Header.Set("Authorization", "Bearer "+c.apiKey)
-	httpReq.Header.Set("HTTP-Referer", "https://github.com/carlosinfantes/cto-advisory-board")
-	httpReq.Header.Set("X-Title", "CTO Advisory Board")
+	httpReq.Header.Set("HTTP-Referer", "https://github.com/carlosinfantes/cio")
+	httpReq.Header.Set("X-Title", "CIO - Chief Intelligence Officer")
 
 	resp, err := c.httpClient.Do(httpReq)
 	if err != nil {

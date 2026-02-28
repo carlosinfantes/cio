@@ -1,4 +1,4 @@
-// Package commands implements the CLI commands for the CTO Advisory Board.
+// Package commands implements the CLI commands for the CIO - Chief Intelligence Officer.
 package commands
 
 import (
@@ -9,14 +9,14 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/carlosinfantes/cto-advisory-board/internal/cli/output"
-	"github.com/carlosinfantes/cto-advisory-board/internal/config"
-	advisorsPkg "github.com/carlosinfantes/cto-advisory-board/internal/core/advisors"
-	ctxLoader "github.com/carlosinfantes/cto-advisory-board/internal/core/context"
-	"github.com/carlosinfantes/cto-advisory-board/internal/core/llm"
-	"github.com/carlosinfantes/cto-advisory-board/internal/core/modes"
-	"github.com/carlosinfantes/cto-advisory-board/internal/plugins"
-	"github.com/carlosinfantes/cto-advisory-board/internal/types"
+	"github.com/carlosinfantes/cio/internal/cli/output"
+	"github.com/carlosinfantes/cio/internal/config"
+	advisorsPkg "github.com/carlosinfantes/cio/internal/core/advisors"
+	ctxLoader "github.com/carlosinfantes/cio/internal/core/context"
+	"github.com/carlosinfantes/cio/internal/core/llm"
+	"github.com/carlosinfantes/cio/internal/core/modes"
+	"github.com/carlosinfantes/cio/internal/plugins"
+	"github.com/carlosinfantes/cio/internal/types"
 )
 
 var (
@@ -30,18 +30,18 @@ var (
 	pluginName   string
 
 	rootCmd = &cobra.Command{
-		Use:   "cto-advisory [question]",
-		Short: "AI-powered executive committee for CTOs",
-		Long: `CTO Advisory Board - Your AI-powered executive committee for technical decisions.
+		Use:   "cio [question]",
+		Short: "AI-powered Chief Intelligence Officer for decisions",
+		Long: `CIO - Chief Intelligence Officer - Your AI-powered executive committee for intelligent decisions.
 
 Get perspectives from a virtual CTO, CISO, VP Engineering, and Staff Architect
 — all debating your specific situation.
 
 Examples:
-  cto-advisory "Should we adopt Kubernetes?"
-  cto-advisory --mode socratic "We need to scale"
-  cto-advisory --mode advocate "We've decided to use MongoDB"
-  cto-advisory --advisors cto,architect "Platform architecture review"`,
+  cio "Should we adopt Kubernetes?"
+  cio --mode socratic "We need to scale"
+  cio --mode advocate "We've decided to use MongoDB"
+  cio --advisors cto,architect "Platform architecture review"`,
 		Args: cobra.MaximumNArgs(1),
 		RunE: runAsk,
 	}
@@ -98,7 +98,7 @@ func runAsk(cmd *cobra.Command, args []string) error {
 	}
 
 	if cfg.APIKey == "" {
-		output.PrintError("No API key configured. Run: cto-advisory init")
+		output.PrintError("No API key configured. Run: cio init")
 		return fmt.Errorf("no API key")
 	}
 
@@ -198,12 +198,19 @@ func runAsk(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
+var version = "1.0.0"
+
+// SetVersion sets the version string (called from main with ldflags value).
+func SetVersion(v string) {
+	version = v
+}
+
 var versionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "Print version information",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("cto-advisory version 1.0.0")
-		fmt.Println("https://github.com/carlosinfantes/cto-advisory-board")
+		fmt.Println("cio version " + version)
+		fmt.Println("https://github.com/carlosinfantes/cio")
 	},
 }
 
@@ -211,13 +218,13 @@ var versionCmd = &cobra.Command{
 func loadPlugin() error {
 	registry := plugins.GetRegistry()
 
-	// Always load the default CTO plugin first
-	defaultPlugin := plugins.DefaultCTOPlugin()
+	// Always load the default CIO plugin first
+	defaultPlugin := plugins.DefaultCIOPlugin()
 	defaultPluginWrapper := &plugins.Plugin{
 		Manifest: defaultPlugin,
 		Personas: defaultPlugin.ToPersonas(),
 	}
-	registry.RegisterPlugin("cto-advisory", defaultPluginWrapper)
+	registry.RegisterPlugin("cio", defaultPluginWrapper)
 
 	// Load plugins from the plugins directory
 	if err := registry.LoadPluginsFromDir("plugins"); err != nil {
@@ -237,7 +244,7 @@ func loadPlugin() error {
 			domains := registry.ListDomains()
 			return fmt.Errorf("plugin '%s' not found. Available: %v", pluginName, domains)
 		}
-		output.PrintInfo(fmt.Sprintf("Plugin activo: %s", pluginName))
+		output.PrintInfo(fmt.Sprintf("Active plugin: %s", pluginName))
 	}
 
 	return nil

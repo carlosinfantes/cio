@@ -1,4 +1,4 @@
-// Package config handles configuration file management for the CTO Advisory Board.
+// Package config handles configuration file management for CIO.
 package config
 
 import (
@@ -8,12 +8,12 @@ import (
 
 	"gopkg.in/yaml.v3"
 
-	"github.com/carlosinfantes/cto-advisory-board/internal/types"
+	"github.com/carlosinfantes/cio/internal/types"
 )
 
 const (
 	// AdvisoryDir is the configuration directory name.
-	AdvisoryDir = ".cto-advisory"
+	AdvisoryDir = ".cio"
 	// ConfigFile is the configuration file name.
 	ConfigFile = "config.yaml"
 	// ContextDir is the context subdirectory name.
@@ -35,7 +35,7 @@ func GetProjectRoot() (string, error) {
 	return os.Getwd()
 }
 
-// GetAdvisoryDir returns the path to the .cto-advisory directory.
+// GetAdvisoryDir returns the path to the .cio directory.
 func GetAdvisoryDir() (string, error) {
 	root, err := GetProjectRoot()
 	if err != nil {
@@ -121,7 +121,7 @@ func EnsureDir(path string) error {
 	return os.MkdirAll(path, 0755)
 }
 
-// EnsureAdvisoryDir creates the .cto-advisory directory structure.
+// EnsureAdvisoryDir creates the .cio directory structure.
 func EnsureAdvisoryDir() error {
 	advisoryDir, err := GetAdvisoryDir()
 	if err != nil {

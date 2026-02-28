@@ -1,4 +1,4 @@
-// Package commands implements the init wizard for the CTO Advisory Board.
+// Package commands implements the init wizard for the CIO - Chief Intelligence Officer.
 package commands
 
 import (
@@ -13,11 +13,11 @@ import (
 	"github.com/charmbracelet/lipgloss"
 	"github.com/spf13/cobra"
 
-	"github.com/carlosinfantes/cto-advisory-board/internal/cli/output"
-	"github.com/carlosinfantes/cto-advisory-board/internal/config"
-	ctxLoader "github.com/carlosinfantes/cto-advisory-board/internal/core/context"
-	"github.com/carlosinfantes/cto-advisory-board/internal/core/llm"
-	"github.com/carlosinfantes/cto-advisory-board/internal/types"
+	"github.com/carlosinfantes/cio/internal/cli/output"
+	"github.com/carlosinfantes/cio/internal/config"
+	ctxLoader "github.com/carlosinfantes/cio/internal/core/context"
+	"github.com/carlosinfantes/cio/internal/core/llm"
+	"github.com/carlosinfantes/cio/internal/types"
 )
 
 func init() {
@@ -27,7 +27,7 @@ func init() {
 func newInitCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "init",
-		Short: "Initialize a new CTO Advisory Board project",
+		Short: "Initialize a new CIO - Chief Intelligence Officer project",
 		Long:  "Run the setup wizard to configure your project context and API key.",
 		RunE:  runInit,
 	}
@@ -164,20 +164,20 @@ func runInit(cmd *cobra.Command, args []string) error {
 		Margin(1, 0)
 
 	successMsg := fmt.Sprintf(`✓ Created:
-  .cto-advisory/config.yaml
-  .cto-advisory/context/organization.yaml
-  .cto-advisory/context/teams.yaml
-  .cto-advisory/context/systems.yaml
-  .cto-advisory/context/facts.yaml
-  .cto-advisory/plugins/installed/
-  .cto-advisory/plugins/custom/
+  .cio/config.yaml
+  .cio/context/organization.yaml
+  .cio/context/teams.yaml
+  .cio/context/systems.yaml
+  .cio/context/facts.yaml
+  .cio/plugins/installed/
+  .cio/plugins/custom/
 
 Domain: %s
 Model:  %s
 
 Next steps:
-  1. Install domain: cto plugin install %s
-  2. Ask a question: cto-advisory "your question"`, domain, model, domain)
+  1. Install domain: cio plugin install %s
+  2. Ask a question: cio "your question"`, domain, model, domain)
 
 	fmt.Println(successStyle.Render(successMsg))
 
@@ -255,12 +255,12 @@ func stepDomainSelection() (string, error) {
 	prompt := &survey.Select{
 		Message: "Select domain:",
 		Options: []string{
-			"cto-advisory - Executive committee for CTOs",
+			"cio - Executive committee for CTOs",
 			"legal-advisory - Legal counsel for business decisions",
 			"medical-advisory - Healthcare practice advisory",
 			"custom - Create or install a custom domain",
 		},
-		Default: "cto-advisory - Executive committee for CTOs",
+		Default: "cio - Executive committee for CTOs",
 	}
 	if err := survey.AskOne(prompt, &domain); err != nil {
 		return "", err
@@ -268,8 +268,8 @@ func stepDomainSelection() (string, error) {
 
 	// Extract domain name from selection
 	switch {
-	case strings.HasPrefix(domain, "cto-advisory"):
-		return "cto-advisory", nil
+	case strings.HasPrefix(domain, "cio"):
+		return "cio", nil
 	case strings.HasPrefix(domain, "legal-advisory"):
 		return "legal-advisory", nil
 	case strings.HasPrefix(domain, "medical-advisory"):
@@ -816,10 +816,15 @@ func saveConstraintsCRF(constraints *constraintsInfo, companyName string, now ti
 		return nil
 	}
 
-	// Save each fact to the facts.yaml file (as a single document for simplicity)
-	// In a production system, you might want to save multiple YAML documents
-	if len(docs) > 0 {
-		return ctxLoader.SaveCRFDocument(&docs[0], "facts.yaml")
+	// Save all constraint documents to the facts.yaml file
+	for i := range docs {
+		filename := "facts.yaml"
+		if i > 0 {
+			filename = fmt.Sprintf("facts_%d.yaml", i)
+		}
+		if err := ctxLoader.SaveCRFDocument(&docs[i], filename); err != nil {
+			return err
+		}
 	}
 
 	_ = contextDir // Used in error path

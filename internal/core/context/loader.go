@@ -10,8 +10,8 @@ import (
 	"github.com/google/uuid"
 	"gopkg.in/yaml.v3"
 
-	"github.com/carlosinfantes/cto-advisory-board/internal/config"
-	"github.com/carlosinfantes/cto-advisory-board/internal/types"
+	"github.com/carlosinfantes/cio/internal/config"
+	"github.com/carlosinfantes/cio/internal/types"
 )
 
 // LoadCRFContext loads all CRF entities from the context directory.
@@ -166,7 +166,7 @@ func CreateOrganizationEntity(id, name, description string, attrs map[string]int
 			Provenance: types.Provenance{
 				Source:    "manual",
 				CreatedAt: now,
-				CreatedBy: "cto-advisory-init",
+				CreatedBy: "cio-init",
 			},
 			Tags: []string{"organization"},
 		},
@@ -194,7 +194,7 @@ func CreateTeamEntity(id, name, description string, headcount int, skills []stri
 			Provenance: types.Provenance{
 				Source:    "manual",
 				CreatedAt: now,
-				CreatedBy: "cto-advisory-init",
+				CreatedBy: "cio-init",
 			},
 			Tags: []string{"team"},
 		},
@@ -220,7 +220,7 @@ func CreateSystemEntity(id, name, description string, attrs map[string]interface
 			Provenance: types.Provenance{
 				Source:    "manual",
 				CreatedAt: now,
-				CreatedBy: "cto-advisory-init",
+				CreatedBy: "cio-init",
 			},
 			Tags: []string{"system", "infrastructure"},
 		},
@@ -246,7 +246,7 @@ func CreateCapabilityEntity(name, capType, proficiency, importance string, cover
 			Provenance: types.Provenance{
 				Source:    "manual",
 				CreatedAt: now,
-				CreatedBy: "cto-advisory-init",
+				CreatedBy: "cio-init",
 			},
 			Tags: []string{"capability"},
 		},
@@ -274,7 +274,7 @@ func CreateFactEntity(id, name, description string, attrs map[string]interface{}
 			Provenance: types.Provenance{
 				Source:    "manual",
 				CreatedAt: now,
-				CreatedBy: "cto-advisory-init",
+				CreatedBy: "cio-init",
 			},
 			Tags: []string{"fact", factType},
 		},
@@ -300,7 +300,7 @@ func CreatePolicyEntity(name, policyType, enforcement, scope, rationale string) 
 			Provenance: types.Provenance{
 				Source:    "manual",
 				CreatedAt: now,
-				CreatedBy: "cto-advisory-init",
+				CreatedBy: "cio-init",
 			},
 			Tags: []string{"policy", policyType},
 		},

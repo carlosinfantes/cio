@@ -7,13 +7,14 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/google/uuid"
 	"gopkg.in/yaml.v3"
 
-	"github.com/carlosinfantes/cto-advisory-board/internal/config"
-	"github.com/carlosinfantes/cto-advisory-board/internal/types"
+	"github.com/carlosinfantes/cio/internal/config"
+	"github.com/carlosinfantes/cio/internal/types"
 )
 
 // FileStorage implements Storage interface using file-based persistence.
@@ -524,21 +525,28 @@ func (fs *FileStorage) SaveConfig(cfg *types.Config) error {
 // Singleton and Factory
 // ============================================================================
 
-var defaultStorage Storage
+var (
+	defaultStorage    Storage
+	defaultStorageErr error
+	storageOnce       sync.Once
+)
 
 // GetDefaultStorage returns the default storage instance.
 func GetDefaultStorage() (Storage, error) {
-	if defaultStorage == nil {
+	storageOnce.Do(func() {
 		fs, err := NewFileStorage()
 		if err != nil {
-			return nil, err
+			defaultStorageErr = err
+			return
 		}
 		defaultStorage = fs
-	}
-	return defaultStorage, nil
+	})
+	return defaultStorage, defaultStorageErr
 }
 
 // SetDefaultStorage sets the default storage instance (useful for testing).
 func SetDefaultStorage(s Storage) {
+	storageOnce.Do(func() {}) // mark as done
 	defaultStorage = s
+	defaultStorageErr = nil
 }

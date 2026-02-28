@@ -3,7 +3,7 @@
 package storage
 
 import (
-	"github.com/carlosinfantes/cto-advisory-board/internal/types"
+	"github.com/carlosinfantes/cio/internal/types"
 )
 
 // Storage defines the interface for all persistence operations.

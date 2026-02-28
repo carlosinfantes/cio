@@ -11,7 +11,7 @@ interface ChatPanelProps {
   domain?: string;
 }
 
-export const ChatPanel: React.FC<ChatPanelProps> = ({ domain = 'cto-advisory' }) => {
+export const ChatPanel: React.FC<ChatPanelProps> = ({ domain = 'cio' }) => {
   const {
     messages,
     isLoading,
@@ -38,8 +38,8 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({ domain = 'cto-advisory' })
         <div className="flex items-center gap-3">
           <MessageSquare className="w-6 h-6 text-white" />
           <div>
-            <h1 className="text-lg font-semibold text-white">CTO Advisory Board</h1>
-            <p className="text-sm text-purple-200">AI-powered technical decisions</p>
+            <h1 className="text-lg font-semibold text-white">CIO - Chief Intelligence Officer</h1>
+            <p className="text-sm text-purple-200">AI-powered intelligent decisions</p>
           </div>
         </div>
         <button

@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/carlosinfantes/cto-advisory-board/internal/types"
+	"github.com/carlosinfantes/cio/internal/types"
 )
 
 // FacilitationPhase represents the current phase of facilitation.

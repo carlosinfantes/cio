@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/carlosinfantes/cto-advisory-board/internal/core/llm"
-	"github.com/carlosinfantes/cto-advisory-board/internal/types"
+	"github.com/carlosinfantes/cio/internal/core/llm"
+	"github.com/carlosinfantes/cio/internal/types"
 )
 
 // Coordinator manages the facilitation flow with auto-escalation.
@@ -186,7 +186,7 @@ func (c *Coordinator) generateJordanResponse(ctx context.Context, userMessage st
 		responseType = "facilitating"
 	}
 
-	systemPrompt := fmt.Sprintf(`You are Jordan, a discovery facilitator for the CTO Advisory Board.
+	systemPrompt := fmt.Sprintf(`You are Jordan, a discovery facilitator for the CIO - Chief Intelligence Officer.
 Your role is to help users articulate their technical decisions clearly.
 You are currently %s.
 
